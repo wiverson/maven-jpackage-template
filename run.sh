@@ -57,8 +57,19 @@ echo "modular jars are in $PWD/module"
 cd target/modules
 rm -rf target/build
 
-echo "starting jlink"
+echo "starting jlink (skipped)"
 
-jlink --module-path /Users/wiverson/src/shade-test/javafx-jmods-15.0.1/:$PWD --bind-services --add-modules shade.test,javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,java.logging --launcher runner=shade.test/com.doublerobot.HelloWorld --output target/build
+# jlink --strip-native-commands --strip-debug --no-header-files --no-man-pages --compress=2 --module-path $JAVA_HOME/jmods/:/Users/wiverson/src/shade-test/javafx-jmods-15.0.1/:$PWD --add-modules shade.test,javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,java.logging --launcher runner=shade.test/com.doublerobot.HelloWorld --output ../TestApp/build
+
+echo "starting jpackage"
+
+cd ..
+
+rm -rf final
+mkdir final
+
+# jpackage --name TestApp --dest final --runtime-image TestApp
+
+jpackage --jlink-options "--strip-native-commands --strip-debug --no-header-files --no-man-pages --compress=2"  --name TestApp --module-path $JAVA_HOME/jmods/:/Users/wiverson/src/shade-test/javafx-jmods-15.0.1/:$PWD/modules/ --add-modules shade.test,javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,java.logging  -m shade.test/com.doublerobot.HelloWorld
 
 echo "Ready."
