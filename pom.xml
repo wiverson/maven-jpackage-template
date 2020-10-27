@@ -40,34 +40,52 @@
                     <mainClass>com.doublerobot.HelloWorld</mainClass>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-                <configuration>
-                    <finalName>shade-test</finalName>
-                    <artifactSet>
-                        <excludes>
-                            <exclude>module-info.java</exclude>
-                            <exclude>module-info.class</exclude>
-                            <exclude>org.openjfx:javafx-controls</exclude>
-                            <exclude>org.openjfx:javafx-graphics</exclude>
-                            <exclude>org.openjfx:javafx-base</exclude>
-                        </excludes>
-                    </artifactSet>
 
-                    <!-- put your configurations here -->
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>build-installer</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.4</version>
+                        <configuration>
+                            <finalName>shade-test</finalName>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>module-info.java</exclude>
+                                    <exclude>module-info.class</exclude>
+                                    <exclude>org.openjfx:javafx-controls</exclude>
+                                    <exclude>org.openjfx:javafx-graphics</exclude>
+                                    <exclude>org.openjfx:javafx-base</exclude>
+                                </excludes>
+                            </artifactSet>
+
+                            <!-- put your configurations here -->
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+
+    </profiles>
+
 
 </project>
