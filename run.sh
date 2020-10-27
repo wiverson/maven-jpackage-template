@@ -7,8 +7,8 @@ mkdir target/modules
 
 ROOT_DIR=$PWD
 
-JAVA_FX_LIBS=javafx-sdk-15.0.1/lib
-JAVA_FX_MODS=javafx-jmods-15.0.1
+JAVA_FX_LIBS=javafx-sdk-15.0.1/lib/
+JAVA_FX_MODS=javafx-jmods-15.0.1/
 
 SHADE_TEST_JAR=target/shade-test.jar
 SHADE=shade.test
