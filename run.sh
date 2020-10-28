@@ -8,12 +8,8 @@ ROOT_DIR=$PWD
 SHADE_TEST_JAR=target/shade-test.jar
 SHADE=shade.test
 
-rm -rf target/work
-rm -rf target/modules 
-mkdir target/work
-mkdir target/modules 
-
-KNOWN_MODULES=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,java.logging
+KNOWN_MODULES=javafx.base,javafx.controls,javafx.graphics,java.logging
+# KNOWN_MODULES=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,java.logging
 
 APP_CLASS=com.doublerobot.HelloWorld
 APP_NAME=TestApp
@@ -23,14 +19,15 @@ MOD=$SHADE
 
 JLINK_OPTIONS="--strip-native-commands --strip-debug --no-header-files --no-man-pages --compress=2"
 
-# ---------------------------
-# generate jackson-core module
+rm -rf target/work
+rm -rf target/modules 
+mkdir target/work
+mkdir target/modules 
 
 echo "Running jdeps to see what the shaded JAR needs to run..."
 jdeps  --module-path "$ROOT_DIR/$JAVA_FX_LIBS" --add-modules $KNOWN_MODULES --generate-module-info target/work $SHADE_TEST_JAR
-
-# ---------------------------
-# build  jackson-core module
+mkdir -p target/site
+cp target/work/$SHADE/module-info.java target/site/module-info.java
 
 echo "Copy original jar into place"
 cp $ROOT_DIR/$JARPATH $ROOT_DIR/target/modules/$MOD.jar
@@ -62,6 +59,6 @@ rm -rf target/build
 
 echo "Start jpackage to build native installer"
 cd ..
-jpackage --jlink-options "$JLINK_OPTIONS" --name $APP_NAME --module-path $JAVA_HOME/jmods/:$PWD/../$JAVA_FX_MODS/:$PWD/modules/ --add-modules $SHADE,$KNOWN_MODULES  -m $SHADE/$APP_CLASS
+jpackage --jlink-options "$JLINK_OPTIONS" --name $APP_NAME --icon ../app-icon.icns --module-path $JAVA_HOME/jmods/:$PWD/../$JAVA_FX_MODS/:$PWD/modules/ --add-modules $SHADE,$KNOWN_MODULES  -m $SHADE/$APP_CLASS
 
 echo "Ready."
