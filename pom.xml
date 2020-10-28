@@ -83,9 +83,13 @@
                                 <excludes>
                                     <exclude>module-info.java</exclude>
                                     <exclude>module-info.class</exclude>
-                                    <exclude>org.openjfx:javafx-controls</exclude>
-                                    <exclude>org.openjfx:javafx-graphics</exclude>
                                     <exclude>org.openjfx:javafx-base</exclude>
+                                    <exclude>org.openjfx:javafx-controls</exclude>
+                                    <exclude>org.openjfx:javafx-fxml</exclude>
+                                    <exclude>org.openjfx:javafx-graphics</exclude>
+                                    <exclude>org.openjfx:javafx-media</exclude>
+                                    <exclude>org.openjfx:javafx-swing</exclude>
+                                    <exclude>org.openjfx:javafx-web</exclude>
                                 </excludes>
                             </artifactSet>
 
