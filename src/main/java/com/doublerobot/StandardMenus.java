@@ -27,10 +27,11 @@ public class StandardMenus {
         }
     }
 
-    private MenuItem Configure(String name, EventHandler<ActionEvent> action, KeyCode keyCode) {
+    public static MenuItem Configure(String name, EventHandler<ActionEvent> action, KeyCode keyCode) {
         MenuItem item = new MenuItem(name);
         item.setOnAction(action);
-        item.setAccelerator(new KeyCodeCombination(keyCode, KeyCombination.SHORTCUT_DOWN));
+        if (keyCode != null)
+            item.setAccelerator(new KeyCodeCombination(keyCode, KeyCombination.SHORTCUT_DOWN));
         return item;
     }
 
@@ -65,6 +66,8 @@ public class StandardMenus {
         edit.getItems().addAll(undo, redo, editSeparator, cut, copy, paste);
 
         menuBar.getMenus().addAll(file, edit);
+
+        menuBar.getMenus().add(new ExtraDesktopIntegration().extraDesktopIntegration(actionTarget));
 
         return menuBar;
     }
