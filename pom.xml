@@ -40,6 +40,11 @@
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.1.2</version>
                 </plugin>
+                <plugin>
+                    <groupId>io.github.wiverson</groupId>
+                    <artifactId>jtoolprovider-plugin</artifactId>
+                    <version>1.0.22-SNAPSHOT</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -72,7 +77,6 @@
             </activation>
             <build>
                 <plugins>
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
@@ -92,8 +96,6 @@
                                     <exclude>org.openjfx:javafx-web</exclude>
                                 </excludes>
                             </artifactSet>
-
-                            <!-- put your configurations here -->
                         </configuration>
                         <executions>
                             <execution>
@@ -104,9 +106,79 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>io.github.wiverson</groupId>
+                        <artifactId>jtoolprovider-plugin</artifactId>
+                        <version>1.0.22-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>jdeps</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>java-tool</goal>
+                                </goals>
+                                <configuration>
+                                    <toolName>jdeps</toolName>
+                                    <args>
+                                        <arg>--module-path</arg>
+                                        <arg>${project.basedir}/javafx-sdk-15.0.1/lib/</arg>
+                                        <arg>--add-modules</arg>
+                                        <arg>javafx.base,javafx.controls,javafx.graphics,java.logging</arg>
+                                        <arg>--generate-module-info</arg>
+                                        <arg>${project.build.directory}/work</arg>
+                                        <arg>${project.build.directory}/shade-test.jar</arg>
+                                    </args>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <phase>package</phase>
+                                <id>compile-module-info</id>
+                                <goals>
+                                    <goal>java-tool</goal>
+                                </goals>
+                                <configuration>
+                                    <toolName>javac</toolName>
+                                    <failOnError>true</failOnError>
+                                    <args>
+                                        <arg>--source</arg>
+                                        <arg>15</arg>
+                                        <arg>--target</arg>
+                                        <arg>15</arg>
+                                        <arg>-p</arg>
+                                        <arg>shade.test,javafx.base,javafx.controls,javafx.graphics,java.logging</arg>
+                                        <arg>--module-path</arg>
+                                        <arg>${project.basedir}/javafx-sdk-15.0.1/lib/</arg>
+                                        <arg>--class-path</arg>
+                                        <arg>${project.build.directory}/classes</arg>
+                                        <arg>-d</arg>
+                                        <arg>${project.build.directory}/classes</arg>
+                                        <arg>${project.build.directory}/work/shade.test/module-info.java</arg>
+                                    </args>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <phase>package</phase>
+                                <id>add-module-info-to-jar</id>
+                                <goals>
+                                    <goal>java-tool</goal>
+                                </goals>
+                                <configuration>
+                                    <toolName>jar</toolName>
+                                    <args>
+                                        <arg>--update</arg>
+                                        <arg>--file</arg>
+                                        <arg>${project.build.directory}/${project.artifactId}.jar</arg>
+                                        <arg>--main-class</arg>
+                                        <arg>com.doublerobot.HelloWorld</arg>
+                                        <arg>${project.build.directory}/classes/module-info.class</arg>
+                                    </args>
+                                </configuration>
+                            </execution>
+
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
-
         </profile>
 
     </profiles>
