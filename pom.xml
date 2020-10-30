@@ -18,6 +18,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+
+        <jtoolprovider.version>1.0.22</jtoolprovider.version>
     </properties>
 
     <dependencies>
@@ -49,7 +51,7 @@
                 <plugin>
                     <groupId>io.github.wiverson</groupId>
                     <artifactId>jtoolprovider-plugin</artifactId>
-                    <version>1.0.21</version>
+                    <version>${jtoolprovider.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -126,7 +128,7 @@
                     <plugin>
                         <groupId>io.github.wiverson</groupId>
                         <artifactId>jtoolprovider-plugin</artifactId>
-                        <version>1.0.21</version>
+                        <version>${jtoolprovider.version}</version>
                         <executions>
                             <execution>
                                 <id>jdeps</id>
@@ -209,7 +211,7 @@
                     <plugin>
                         <groupId>io.github.wiverson</groupId>
                         <artifactId>jtoolprovider-plugin</artifactId>
-                        <version>1.0.21</version>
+                        <version>${jtoolprovider.version}</version>
                         <executions>
                             <execution>
                                 <id>jpackage-mac-installer</id>
@@ -259,7 +261,7 @@
                     <plugin>
                         <groupId>io.github.wiverson</groupId>
                         <artifactId>jtoolprovider-plugin</artifactId>
-                        <version>1.0.21</version>
+                        <version>${jtoolprovider.version}</version>
                         <executions>
                             <execution>
                                 <id>jpackage-win-installer</id>
@@ -301,6 +303,4 @@
             </build>
         </profile>
     </profiles>
-
-
 </project>
