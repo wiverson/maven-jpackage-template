@@ -49,7 +49,7 @@
                 <plugin>
                     <groupId>io.github.wiverson</groupId>
                     <artifactId>jtoolprovider-plugin</artifactId>
-                    <version>1.0.22-SNAPSHOT</version>
+                    <version>1.0.21</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -126,7 +126,7 @@
                     <plugin>
                         <groupId>io.github.wiverson</groupId>
                         <artifactId>jtoolprovider-plugin</artifactId>
-                        <version>1.0.22-SNAPSHOT</version>
+                        <version>1.0.21</version>
                         <executions>
                             <execution>
                                 <id>jdeps</id>
@@ -209,7 +209,7 @@
                     <plugin>
                         <groupId>io.github.wiverson</groupId>
                         <artifactId>jtoolprovider-plugin</artifactId>
-                        <version>1.0.22-SNAPSHOT</version>
+                        <version>1.0.21</version>
                         <executions>
                             <execution>
                                 <id>jpackage-mac-installer</id>
@@ -231,6 +231,59 @@
                                         <arg>--module-path</arg>
                                         <arg>
                                             ${java.home}/jmods/:${project.build.directory}/classes:${project.basedir}/${javafx-mods-version}/
+                                        </arg>
+                                        <arg>--add-modules</arg>
+                                        <arg>${java-mod-name},javafx.base,javafx.controls,javafx.graphics,java.logging
+                                        </arg>
+                                        <arg>-m</arg>
+                                        <arg>${java-mod-name}/${main-class}</arg>
+                                        <arg>--dest</arg>
+                                        <arg>${project.build.directory}</arg>
+                                    </args>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>build-win-installer</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.github.wiverson</groupId>
+                        <artifactId>jtoolprovider-plugin</artifactId>
+                        <version>1.0.21</version>
+                        <executions>
+                            <execution>
+                                <id>jpackage-win-installer</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>java-tool</goal>
+                                </goals>
+                                <configuration>
+                                    <toolName>jpackage</toolName>
+                                    <args>
+                                        <arg>--jlink-options</arg>
+                                        <arg>--strip-native-commands --strip-debug --no-header-files --no-man-pages
+                                            --compress=2
+                                        </arg>
+                                        <arg>--name</arg>
+                                        <arg>TestApp</arg>
+                                        <arg>--win-menu</arg>
+                                        <arg>--win-menu-group</arg>
+                                        <arg>Sample</arg>
+                                        <arg>--icon</arg>
+                                        <arg>${project.basedir}/app-icon.ico</arg>
+                                        <arg>--module-path</arg>
+                                        <arg>
+                                            ${java.home}/jmods/;${project.build.directory}/classes/;${project.basedir}/${javafx-mods-version}/
                                         </arg>
                                         <arg>--add-modules</arg>
                                         <arg>${java-mod-name},javafx.base,javafx.controls,javafx.graphics,java.logging
