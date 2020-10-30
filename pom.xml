@@ -82,7 +82,7 @@
         <profile>
             <id>build-installer</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -185,9 +185,28 @@
                                     </args>
                                 </configuration>
                             </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>build-mac-installer</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.github.wiverson</groupId>
+                        <artifactId>jtoolprovider-plugin</artifactId>
+                        <version>1.0.22-SNAPSHOT</version>
+                        <executions>
                             <execution>
-                                <id>build-installers</id>
-                                <phase>package</phase>
+                                <id>jpackage-mac-installer</id>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>java-tool</goal>
                                 </goals>
@@ -215,13 +234,11 @@
                                     </args>
                                 </configuration>
                             </execution>
-
                         </executions>
                     </plugin>
                 </plugins>
             </build>
         </profile>
-
     </profiles>
 
 
