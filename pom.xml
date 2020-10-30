@@ -51,6 +51,15 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <!-- This is an app, so we don't want to install it in the Maven local repository -->
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
@@ -195,12 +204,14 @@
                                         <arg>${project.basedir}/app-icon.icns</arg>
                                         <arg>--module-path</arg>
                                         <arg>
-                                            ${java.home}/jmods/:${project.build.directory}:${project.basedir}/javafx-jmods-15.0.1/
+                                            ${java.home}/jmods/:${project.build.directory}/classes:${project.basedir}/javafx-jmods-15.0.1/
                                         </arg>
                                         <arg>--add-modules</arg>
                                         <arg>shade.test,javafx.base,javafx.controls,javafx.graphics,java.logging</arg>
                                         <arg>-m</arg>
                                         <arg>shade.test/com.doublerobot.HelloWorld</arg>
+                                        <arg>--dest</arg>
+                                        <arg>${project.build.directory}</arg>
                                     </args>
                                 </configuration>
                             </execution>
