@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.doublerobot</groupId>
+    <groupId>com.doublerobot</groupId>
     <artifactId>shade-test</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -19,14 +19,24 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <jtoolprovider.version>1.0.22</jtoolprovider.version>
+        <jtoolprovider.version>1.0.23</jtoolprovider.version>
     </properties>
 
     <dependencies>
+        <!-- Base JavaFX import. This dependency is provided via a module, so we don't want it included in the
+         shaded master jar. -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>15</version>
+        </dependency>
+        <!-- This dependency is a normal Maven dependency. It brings in other transitive dependencies as well.
+         We want to include the contents of this (and all of the other transitive dependencies in our final
+         shaded master jar. -->
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
         </dependency>
     </dependencies>
 
@@ -103,12 +113,43 @@
                             <exclude>org.openjfx:javafx-web</exclude>
                         </excludes>
                     </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.MF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                    <outputDirectory>${project.build.directory}/shaded-jar/</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>prepare</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <unzip src="target/shaded-jar/shade-test.jar"
+                                       dest="target/unpacked-shade/"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -133,53 +174,32 @@
                                 <arg>javafx.base,javafx.controls,javafx.graphics,java.logging</arg>
                                 <arg>--generate-module-info</arg>
                                 <arg>${project.build.directory}/work</arg>
-                                <arg>${project.build.directory}/${project.artifactId}.jar</arg>
+                                <arg>${project.build.directory}/shaded-jar/${project.artifactId}.jar</arg>
                             </args>
                         </configuration>
                     </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <version>1.0.0.RC1</version>
+                <executions>
                     <execution>
+                        <id>add-module-infos</id>
                         <phase>package</phase>
-                        <id>compile-module-info</id>
                         <goals>
-                            <goal>java-tool</goal>
+                            <goal>add-module-info</goal>
                         </goals>
                         <configuration>
-                            <toolName>javac</toolName>
-                            <failOnError>true</failOnError>
-                            <args>
-                                <arg>--source</arg>
-                                <arg>15</arg>
-                                <arg>--target</arg>
-                                <arg>15</arg>
-                                <arg>-p</arg>
-                                <arg>${java-mod-name},javafx.base,javafx.controls,javafx.graphics,java.logging
-                                </arg>
-                                <arg>--module-path</arg>
-                                <arg>${project.basedir}/${javafx-libs-version}/lib/</arg>
-                                <arg>--class-path</arg>
-                                <arg>${project.build.directory}/classes</arg>
-                                <arg>-d</arg>
-                                <arg>${project.build.directory}/classes</arg>
-                                <arg>${project.build.directory}/work/${java-mod-name}/module-info.java</arg>
-                            </args>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <phase>package</phase>
-                        <id>add-module-info-to-jar</id>
-                        <goals>
-                            <goal>java-tool</goal>
-                        </goals>
-                        <configuration>
-                            <toolName>jar</toolName>
-                            <args>
-                                <arg>--update</arg>
-                                <arg>--file</arg>
-                                <arg>${project.build.directory}/${project.artifactId}.jar</arg>
-                                <arg>--main-class</arg>
-                                <arg>${main-class}</arg>
-                                <arg>${project.build.directory}/classes/module-info.class</arg>
-                            </args>
+                            <outputDirectory>${project.build.directory}/modules</outputDirectory>
+                            <modules>
+                                <module>
+                                    <file>${project.build.directory}/shaded-jar/shade-test.jar</file>
+                                    <moduleInfoFile>${project.build.directory}/work/shade.test/module-info.java
+                                    </moduleInfoFile>
+                                </module>
+                            </modules>
                         </configuration>
                     </execution>
                 </executions>
@@ -188,6 +208,8 @@
     </build>
 
     <profiles>
+
+
         <profile>
             <id>build-mac-installer</id>
             <activation>
@@ -221,7 +243,7 @@
                                         <arg>${project.basedir}/app-icon.icns</arg>
                                         <arg>--module-path</arg>
                                         <arg>
-                                            ${java.home}/jmods/:${project.build.directory}/classes:${project.basedir}/${javafx-mods-version}/
+                                            ${java.home}/jmods/:${project.build.directory}/modules/:${project.basedir}/${javafx-mods-version}/
                                         </arg>
                                         <arg>--add-modules</arg>
                                         <arg>${java-mod-name},javafx.base,javafx.controls,javafx.graphics,java.logging
