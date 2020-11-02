@@ -1,37 +1,46 @@
 
-# shade-test
+# maven-jpackage-template
 
 ### Goal
 
 1. Build nice, small cross-platform JavaFX-based desktop apps with native installers
-2. Continue to use the standard Maven dependency system.
+2. Continue to use the standard Maven dependency system to automatically manage transitive dependencies
 
 ### Problems
 
 The jlink/jpackage tools which provide nice, small installers rely on the new Java
-module system. This system is a bit difficult to use, as it expects all of the various
+module system. This system is a bit difficult to use, as it expects the various
 Java libraries used by an application to add additional information (typically either via
 extra manifest entries or a new, compiled module-info.java/.class).
 
 In the wild, most often these are dealt with by building project specific batch and shell
 scripts. These are a pain to maintain, and are also rather brittle.
 
+In the worst-case scenario, every time a developer adds a standard Maven dependency, the entire
+build process breaks due to module problems. This presents a grim choice - either give up on jpackage to produce
+nice, tiny installers, or give up on Maven dependency management and return to the bad old days of shell scripts
+and manually managing library paths.
+
 ### Solution
 
 In this sample project, these problems are manged through the use of a single
-application shaded jar. All of the project's Maven dependencies are merged into a single JAR, and 
-then jdeps automatically generates the module-info.java.
+application-scoped [shaded jar](https://maven.apache.org/plugins/maven-shade-plugin/). 
+The project Maven dependencies are merged into a single JAR, and then jdeps automatically generates the module-info.java.
 
 While this is a *terrible* strategy for libraries, it works just fine for end-user
 desktop applications.
 
 So, what we have here is a pretty small, simple Maven project template that can be used to 
 build nice, small native installers for a JavaFX application using only Maven, Java 15, and 
-the jpackage required macOS XCode or Windows WiX.
+the jpackage required macOS XCode or Windows [WiX Toolset](https://wixtoolset.org/).
 
 On macOS and Windows, these installers are coming in at around 30-40MB. This demonstration app
 includes several native desktop demonstration features - for example, drag-and-drop from the Finder/Explorer,
 as well as a few macOS Dock integration examples. The "Hello World" versions are closer to 30MB than 40MB.
+
+This also provides an eventual path for migrating to fully modularized libraries. As libraries are converted to
+modules, eventually the build could be migrated to Maven-managed modules, perhaps eventually leveraging
+[Maven copy-dependencies](https://maven.apache.org/plugins/maven-dependency-plugin/copy-dependencies-mojo.html).
 
 # Usage
 

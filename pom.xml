@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.doublerobot</groupId>
-    <artifactId>shade-test</artifactId>
+    <artifactId>maven-jpackage-template</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <main-class>com.doublerobot.HelloWorld</main-class>
-        <java-mod-name>shade.test</java-mod-name>
+        <!-- This should be the . version of the artifactId -->
+        <java-mod-name>maven.jpackage.template</java-mod-name>
 
         <javafx-mods-version>javafx-jmods-15.0.1</javafx-mods-version>
         <javafx-libs-version>javafx-sdk-15.0.1</javafx-libs-version>
@@ -19,12 +20,13 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
+        <!-- This project uses the https://github.com/wiverson/jtoolprovider-plugin to invoke jdeps and jpackage -->
         <jtoolprovider.version>1.0.23</jtoolprovider.version>
     </properties>
 
     <dependencies>
         <!-- Base JavaFX import. This dependency is provided via a module, so we don't want it included in the
-         shaded master jar. -->
+         shaded master jar, but by including it here it it works nicely with IDEs such as IntelliJ. -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -32,7 +34,7 @@
         </dependency>
         <!-- This dependency is a normal Maven dependency. It brings in other transitive dependencies as well.
          We want to include the contents of this (and all of the other transitive dependencies in our final
-         shaded master jar. -->
+         shaded master jar. This dependency generates fake data for testing. -->
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
@@ -71,7 +73,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
                 <version>3.0.0-M1</version>
-                <!-- This is an app, so we don't want to install it in the Maven local repository -->
+                <!-- This is an app, so we don't want to install it in the local Maven repository -->
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -81,7 +83,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <release>11</release>
+                    <release>${maven.compiler.target}</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -97,13 +99,12 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
                 <configuration>
-                    <finalName>shade-test</finalName>
+                    <finalName>${project.artifactId}</finalName>
+                    <!-- Use this section to filter out items by artifactId from the shaded jar. Here we are excluding
+                    the JavaFX SDK - those will be added in as platform-specific libraries later.  You would do something
+                     similar for other artifacts that would be supplied as modules. -->
                     <artifactSet>
                         <excludes>
-                            <exclude>**/module-info.java</exclude>
-                            <exclude>**/module-info.class</exclude>
-                            <exclude>module-info.java</exclude>
-                            <exclude>module-info.class</exclude>
                             <exclude>org.openjfx:javafx-base</exclude>
                             <exclude>org.openjfx:javafx-controls</exclude>
                             <exclude>org.openjfx:javafx-fxml</exclude>
@@ -113,10 +114,17 @@
                             <exclude>org.openjfx:javafx-web</exclude>
                         </excludes>
                     </artifactSet>
+                    <!-- Use this section to filter out items by file name from the shaded jar. Here we are excluding
+                    any module information and manifest data from the shaded jar - they would be incorrect and/or
+                    duplicates given our shaded jar strategy. -->
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
                             <excludes>
+                                <exclude>**/module-info.java</exclude>
+                                <exclude>**/module-info.class</exclude>
+                                <exclude>module-info.java</exclude>
+                                <exclude>module-info.class</exclude>
                                 <exclude>META-INF/*.MF</exclude>
                                 <exclude>META-INF/*.DSA</exclude>
                                 <exclude>META-INF/*.RSA</exclude>
@@ -138,13 +146,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.0.0</version>
+                <!-- We use the Ant task here to unzip the shaded jar to make jdeps have a new directory to work with -->
                 <executions>
                     <execution>
                         <id>prepare</id>
                         <phase>package</phase>
                         <configuration>
                             <target>
-                                <unzip src="target/shaded-jar/shade-test.jar"
+                                <unzip src="target/shaded-jar/${project.artifactId}.jar"
                                        dest="target/unpacked-shade/"/>
                             </target>
                         </configuration>
@@ -158,6 +167,11 @@
                 <groupId>io.github.wiverson</groupId>
                 <artifactId>jtoolprovider-plugin</artifactId>
                 <version>${jtoolprovider.version}</version>
+                <!-- We use the jdeps tool here on the exploded directory to automatically generate a module-info.java
+                file for the entire shaded jar. You'll notice that we are explicitly passing in the JavaFX modules here -
+                you may want to tweak this as you use (or don't use) different modules. The smaller the set of modules,
+                the smaller the final app will be.
+                -->
                 <executions>
                     <execution>
                         <id>jdeps</id>
@@ -181,6 +195,8 @@
                 </executions>
             </plugin>
             <plugin>
+                <!-- This plugin compiles and attaches the generated module-info back to the shaded jar -
+                now we have everything we need to start generating an installer! -->
                 <groupId>org.moditect</groupId>
                 <artifactId>moditect-maven-plugin</artifactId>
                 <version>1.0.0.RC1</version>
@@ -195,8 +211,8 @@
                             <outputDirectory>${project.build.directory}/modules</outputDirectory>
                             <modules>
                                 <module>
-                                    <file>${project.build.directory}/shaded-jar/shade-test.jar</file>
-                                    <moduleInfoFile>${project.build.directory}/work/shade.test/module-info.java
+                                    <file>${project.build.directory}/shaded-jar/${project.artifactId}.jar</file>
+                                    <moduleInfoFile>${project.build.directory}/work/${java-mod-name}/module-info.java
                                     </moduleInfoFile>
                                 </module>
                             </modules>
@@ -208,8 +224,10 @@
     </build>
 
     <profiles>
-
-
+        <!-- We use the built-in Maven profile activation system to automatically bind either the macOS or Windows
+         profile to the install phase.  The configuration options for jpackage are wildly platform specific. These
+         are workable minimal options - depending on your application, you may wish to custom further.
+         -->
         <profile>
             <id>build-mac-installer</id>
             <activation>
