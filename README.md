@@ -120,10 +120,10 @@ ships and jpackage is no longer in incubation this will just go away as an issue
 Q: What about the Linux versions? Just macOS and Windows? You Linux-hating monster!
 
 A: I'm pretty sure if you are a Java developer working on Linux you can figure out how to copy-and-paste
-and then tweak the attached to get it working with Linux.  I love Linux for server-side work, but
-I don't use it for desktop.  It's a more productive use of my time to focus on the two (already kind of fussy)
-macOS and Windows platforms for now, and leave the Linux build to others. That said, feel free to reach out
-if you'd like to incentivize me to add Linux...  :)
+and then tweak the pom.xml to get it working with Linux.  I love Linux for server-side work, but
+I don't use it for desktop.  It's a more productive use of my time to focus on the two (fussy)
+macOS and Windows platforms for now. That said, feel free to [reach out](https://doublerobot.com/contact)
+if you'd like to incentivize me to add Linux, or send a PR if you are interested...  :)
 
 Q: Any Tips for Windows?
 
@@ -142,9 +142,9 @@ or [this command-line signing tutorial](https://blog.dgunia.de/2020/02/12/signed
 
 Q: Can I generate macOS installers on Windows, or Windows installers on macOS?
 
-A: No. I strongly suggest some kind of CI system that supports both macOS and Windows runners if you are doing
-this professionally. If you are looking for someone to help out with setting this up, feel free 
-to [make contact](https://doublerobot.com/contact).
+A: [No.](https://openjdk.java.net/jeps/392) I strongly suggest some kind of CI system that supports both macOS 
+and Windows runners if you are doing this professionally. If you are looking for someone to help out with setting 
+this up, feel free to [make contact](https://doublerobot.com/contact).
 
 Q: Does this support auto-updating, crash reporting, or analytics?
 
