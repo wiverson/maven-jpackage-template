@@ -84,7 +84,7 @@ agreements. Try opening Terminal and running the command `hdiutil` and make sure
 8. If you are running on Windows, install the [Wix 3 binaries](https://github.com/wixtoolset/wix3/releases/).
 As of this writing, merely installing Wix via the installer was sufficient for jpackage to find it.
 9. Once all that is working, you should be able to just run `mvn clean install` from the root of the project
-to generate the target\TestApp.dmg or target\TestApp.exe (installer).
+to generate the `target\TestApp.dmg` or `target\TestApp.exe` (installer).
 For reference, here is a complete run log for [a successful run on Windows](docs/sample-windows-run.md).
 
 Because these builds use stripped down JVM images, the final installers on both macOS and Windows are in
@@ -113,7 +113,7 @@ This bug is tracked by JetBrains as
 There is a `.mvn/Xjvm.config file` in this project - once the bug is fixed,
  or if you use a different editor, 
 just try renaming that file to `jvm.config`. Or, presumably, when Java 16 
-ships and jpackage is no longer in incubation.
+ships and jpackage is no longer in incubation this will just go away as an issue.
 
 # Miscellaneous
 
@@ -149,6 +149,4 @@ to [make contact](https://doublerobot.com/contact).
 Q: Does this support auto-updating, crash reporting, or analytics?
 
 A: No... but that sure would be interesting. If you are looking for someone to help out with setting this up, feel free 
- to [make contact](https://doublerobot.com/contact).
-
-
+ to [make contact](https://doublerobot.com/contact)...
