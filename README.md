@@ -29,6 +29,20 @@ So, what we have here is a pretty small, simple Maven project template that can 
 build nice, small native installers for a JavaFX application using only Maven, Java 15, and 
 the jpackage required macOS XCode or Windows WiX.
 
+# Usage
+
+Once everything is installed (see below) it's really easy to use:
+
+## Usage
+
+To generate an installer, just run...
+
+`mvn clean install`
+
+To do everything up until the actual installer generation...
+
+`mvn clean package`
+
 # Installation
 
 1. Install [Java 15](https://adoptopenjdk.net/). Verify this by opening a fresh Terminal or
@@ -39,7 +53,9 @@ Verify this by opening a fresh Terminal or Command Prompt and typing `mvn --vers
 4. Download and the [platform-specific JavaFX](https://gluonhq.com/products/javafx/) files.
 5. Place the contents of the JavaFX jmods and JavaFX SDK in the proper locations in your project. 
 Here's a sample showing what that should look like:
+
 ![Install Sample](docs/file-layout.png)
+
 6. Add the jpackage configuration to your MAVEN_OPTS for your shell environment (described in 
 more detail below).
 As of Java 15, you can verify this is working by observing the warning about using an incubator
@@ -68,10 +84,8 @@ the 30-40MB range.
 ## jpackage Configuration
 
 This project relies on [jtoolprovider-plugin](https://github.com/wiverson/jtoolprovider-plugin) 
-to perform key build steps. To generate the actual installers, the 
-jpackage tool must be available to the ToolProvider API.  
-For most people, adding a `MAVEN_OPTS` environment variable 
-will work nicely.
+to perform key build steps. To generate the actual installers, the jpackage tool must be available to the ToolProvider 
+API.  For most people, adding a `MAVEN_OPTS` environment variable will work nicely.
 
 For example, on macOS, this can be done by adding to
 the following line to the `~/.zshrc` file.
@@ -80,7 +94,7 @@ the following line to the `~/.zshrc` file.
 
 Current versions of Windows 10 have a nice UI for adding an environment
 variable. You can find it in the modern control panel via search -
-just start a search for "env" and that should bring it up.
+just start a search for "env" and that should bring up the appropriate control panel.
 
 Unfortunately, as of this writing adding this entry to the IntelliJ
 options for Maven (either in the IntelliJ Maven JVM importer UI or 
@@ -92,12 +106,3 @@ There is a `.mvn/Xjvm.config file` in this project - once the bug is fixed,
 just try renaming that file to `jvm.config`. Or, presumably, when Java 16 
 ships and jpackage is no longer in incubation.
 
-## Usage
-
-To generate an installer, just run...
-
-`mvn clean install`
-
-To do everything up until the actual installer generation...
-
-`mvn clean package`
