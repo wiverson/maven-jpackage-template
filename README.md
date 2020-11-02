@@ -3,7 +3,7 @@
 
 ### Goal
 
-1. Build nice, small cross-platform JavaFX-based Desktop apps with native installers
+1. Build nice, small cross-platform JavaFX-based desktop apps with native installers
 2. Continue to use the standard Maven dependency system.
 
 ### Problems
@@ -29,11 +29,13 @@ So, what we have here is a pretty small, simple Maven project template that can 
 build nice, small native installers for a JavaFX application using only Maven, Java 15, and 
 the jpackage required macOS XCode or Windows WiX.
 
+On macOS and Windows, these installers are coming in at around 30-40MB. This demonstration app
+includes several native desktop demonstration features - for example, drag-and-drop from the Finder/Explorer,
+as well as a few macOS Dock integration examples. The "Hello World" versions are closer to 30MB than 40MB.
+
 # Usage
 
 Once everything is installed (see below) it's really easy to use:
-
-## Usage
 
 To generate an installer, just run...
 
@@ -75,7 +77,7 @@ agreements. Try opening Terminal and running the command `hdiutil` and make sure
 8. If you are running on Windows, install the [Wix 3 binaries](https://github.com/wixtoolset/wix3/releases/).
 As of this writing, merely installing Wix via the installer was sufficient for jpackage to find it.
 9. Once all that is working, you should be able to just run `mvn clean install` from the root of the project
-and you'll have either a TestApp.dmg or a TestApp.exe (installer).
+to generate the target\TestApp.dmg or target\TestApp.exe (installer).
 For reference, here is a complete run log for [a successful run on Windows](docs/sample-windows-run.md).
 
 Because these builds use stripped down JVM images, the final installers on both macOS and Windows are in
@@ -105,4 +107,41 @@ There is a `.mvn/Xjvm.config file` in this project - once the bug is fixed,
  or if you use a different editor, 
 just try renaming that file to `jvm.config`. Or, presumably, when Java 16 
 ships and jpackage is no longer in incubation.
+
+# Miscellaneous
+
+Q: What about the Linux versions? Just macOS and Windows? You Linux-hating monster!
+
+A: I'm pretty sure if you are a Java developer working on Linux you can figure out how to copy-and-paste
+and then tweak the attached to get it working with Linux.  I love Linux for server-side work, but
+I don't use it for desktop.  It's a more productive use of my time to focus on the two (already kind of fussy)
+macOS and Windows platforms for now, and leave the Linux build to others. That said, feel free to reach out
+if you'd like to incentivize me to add Linux...  :)
+
+Q: Any Tips for Windows?
+
+A: As of this writing, the Windows options will work, but the lack of a version number means that right now
+you have to manually uninstall and reinstall via the Windows Control Panel to update to a new version. Not a
+big deal for development, but when you go to install an update you'll have to uninstall/reinstall manually.  
+In a proper CI build, the installer version should be set by the CI system. Use this project as a starting
+point and add the version info based on your CI approach.
+
+Q: What about macOS Signing?
+
+A: This is a good starting point, but you will likely need to add additional options to ship - most notably,
+you may want to sign and/or notarize your app for macOS. As of this writing, you may want to check out tools
+such as [Gon](https://github.com/nordcloud/gon) 
+or [this command-line signing tutorial](https://blog.dgunia.de/2020/02/12/signed-macos-programs-with-java-14/).
+
+Q: Can I generate macOS installers on Windows, or Windows installers on macOS?
+
+A: No. I strongly suggest some kind of CI system that supports both macOS and Windows runners if you are doing
+this professionally. If you are looking for someone to help out with setting this up, feel free 
+to [make contact](https://doublerobot.com/contact).
+
+Q: Does this support auto-updating, crash reporting, or analytics?
+
+A: No... but that sure would be interesting. If you are looking for someone to help out with setting this up, feel free 
+ to [make contact](https://doublerobot.com/contact).
+
 
