@@ -115,6 +115,17 @@ There is a `.mvn/Xjvm.config file` in this project - once the bug is fixed,
 just try renaming that file to `jvm.config`. Or, presumably, when Java 16 
 ships and jpackage is no longer in incubation this will just go away as an issue.
 
+# Help
+
+Problems? Make sure everything is installed and working right!
+
+- Compiler not recognizing the --release option? Probably on an old JDK.
+- Can't find jpackage? Make sure the MAVEN_OPTS are set right.
+- Can't find jdeps? Probably on an old JDK.
+- Can't find javafx.base? Probably didn't install the javafx jmods and/or sdk correctly. Check the screenshot
+above to make sure your directory structure is right. The build will NOT work out of the box until you install
+one of these! (This might change in the future)
+
 # Miscellaneous
 
 Q: What about the Linux versions? Just macOS and Windows? You Linux-hating monster!
@@ -150,3 +161,8 @@ Q: Does this support auto-updating, crash reporting, or analytics?
 
 A: No... but that sure would be interesting. If you are looking for someone to help out with setting this up, feel free 
  to [make contact](https://doublerobot.com/contact)...
+
+Q: I'd rather use shell scripts.
+
+A: Cool - check out [JPackageScriptFX](https://github.com/dlemmermann/JPackageScriptFX) - the original shell scripts
+that were the start of this project.
