@@ -33,3 +33,7 @@ target/
 
 # OS
 .DS_Store
+*.jmod
+*.dylib
+javafx-sdk-15.0.1/lib/**
+javafx-sdk-15.0.1/legal/**
