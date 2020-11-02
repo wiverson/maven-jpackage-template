@@ -13,9 +13,6 @@ module system. This system is a bit difficult to use, as it expects the various
 Java libraries used by an application to add additional information (typically either via
 extra manifest entries or a new, compiled module-info.java/.class).
 
-In the wild, most often these are dealt with by building project specific batch and shell
-scripts. These are a pain to maintain, and are also rather brittle.
-
 In the worst-case scenario, every time a developer adds a standard Maven dependency, the entire
 build process breaks due to module problems. This presents a grim choice - either give up on jpackage to produce
 nice, tiny installers, or give up on Maven dependency management and return to the bad old days of shell scripts
@@ -25,7 +22,8 @@ and manually managing library paths.
 
 In this sample project, these problems are manged through the use of a single
 application-scoped [shaded jar](https://maven.apache.org/plugins/maven-shade-plugin/). 
-The project Maven dependencies are merged into a single JAR, and then jdeps automatically generates the module-info.java.
+The application's normal Maven dependencies are merged into a single JAR, and then jdeps automatically 
+generates the module-info.java.
 
 While this is a *terrible* strategy for libraries, it works just fine for end-user
 desktop applications.
