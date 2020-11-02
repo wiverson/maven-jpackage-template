@@ -293,10 +293,10 @@
                                         <arg>--win-menu-group</arg>
                                         <arg>Sample</arg>
                                         <arg>--icon</arg>
-                                        <arg>${project.basedir}/app-icon.ico</arg>
+                                        <arg>${project.basedir}\app-icon.ico</arg>
                                         <arg>--module-path</arg>
                                         <arg>
-                                            ${java.home}/jmods/;${project.build.directory}/classes/;${project.basedir}/${javafx-mods-version}/
+                                            ${java.home}\jmods\;${project.build.directory}\modules\;${project.basedir}\${javafx-mods-version}/
                                         </arg>
                                         <arg>--add-modules</arg>
                                         <arg>${java-mod-name},javafx.base,javafx.controls,javafx.graphics,java.logging
