@@ -37,3 +37,4 @@ target/
 *.dylib
 javafx-sdk-15.0.1/lib/**
 javafx-sdk-15.0.1/legal/**
+javafx-sdk-15.0.1/bin/*.dll
