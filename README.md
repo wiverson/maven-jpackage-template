@@ -1,7 +1,7 @@
 
 # maven-jpackage-template
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/https://gitter.im/maven-jpackage-template/community)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/maven-jpackage-template/community)
 
 ### Goal
 
