@@ -1,6 +1,8 @@
 
 # maven-jpackage-template
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/https://gitter.im/maven-jpackage-template/community)
+
 ### Goal
 
 1. Build nice, small cross-platform JavaFX-based desktop apps with native installers
