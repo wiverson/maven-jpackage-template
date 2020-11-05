@@ -209,6 +209,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/modules</outputDirectory>
+                            <overwriteExistingFiles>true</overwriteExistingFiles>
                             <modules>
                                 <module>
                                     <file>${project.build.directory}/shaded-jar/${project.artifactId}.jar</file>
@@ -224,6 +225,57 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>add-jlink-package</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.github.wiverson</groupId>
+                        <artifactId>jtoolprovider-plugin</artifactId>
+                        <version>${jtoolprovider.version}</version>
+                        <!-- jlink here generates an image and launcher for your app, but does not wrap it
+                        with an installer (like jpackage). This execution is not run by default - if you are using
+                        jpackage, it's calling jlink for you anyways, so this would just make the build slower.
+                        It's bound to the verify goal to make sure all of the other plugins run first instead.
+                        From a purist, it would probably make more sense to bind this to install (like jpackage is),
+                        but by putting this on verify it means that you can quickly flip back and forth between
+                        jlink builds (in IntelliJ) and jpackage builds (via command-line Maven runner).
+                        -->
+                        <executions>
+                            <execution>
+                                <id>jlink</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>java-tool</goal>
+                                </goals>
+                                <configuration>
+                                    <toolName>jlink</toolName>
+                                    <args>
+                                        <arg>--strip-native-commands</arg>
+                                        <arg>--strip-debug</arg>
+                                        <arg>--no-header-files</arg>
+                                        <arg>--no-man-pages</arg>
+                                        <arg>--compress=2</arg>
+                                        <arg>--module-path</arg>
+                                        <arg>${project.basedir}/${javafx-libs-version}/lib/</arg>
+                                        <arg>--add-modules</arg>
+                                        <arg>javafx.base,javafx.controls,javafx.graphics,java.logging</arg>
+                                        <arg>--launcher</arg>
+                                        <arg>launch=${java-mod-name}/${main-class}</arg>
+                                        <arg>--output</arg>
+                                        <arg>${project.build.directory}/jlink-image</arg>
+                                    </args>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <!-- We use the built-in Maven profile activation system to automatically bind either the macOS or Windows
          profile to the install phase.  The configuration options for jpackage are wildly platform specific. These
          are workable minimal options - depending on your application, you may wish to custom further.
