@@ -1,5 +1,6 @@
 package com.doublerobot;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
@@ -49,7 +50,7 @@ public class StandardMenus {
         file.getItems().addAll(newFile, open);
 
         if (!MacSpecific.isMac()) {
-            MenuItem quit = Configure("Quit", x -> System.exit(0), KeyCode.Q);
+            MenuItem quit = Configure("Quit", x -> Platform.exit(), KeyCode.Q);
             file.getItems().add(quit);
         } else {
             menuBar.setUseSystemMenuBar(true);
