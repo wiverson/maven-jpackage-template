@@ -23,9 +23,10 @@ jobs:
         tag: wix3112rtm
         file: wix311-binaries.zip
     - name: Decompress Wix
-      uses: TonyBogdanov/zip@1.0
+      uses: DuckSoft/extract-7z-action@v1.0
       with:
-        args: unzip -qq ./wix311-binaries.zip -d ./target/wix
+        pathSource: wix311-binaries.zip
+        pathTarget: ./target/wix
     - name: Add Wix to Path
       run: echo "$HOME/target/wix" >> $GITHUB_PATH
     - uses: actions/checkout@v2
