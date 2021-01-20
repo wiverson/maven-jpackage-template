@@ -38,6 +38,11 @@ This also provides an eventual path for migrating to fully modularized libraries
 eventually the build could be migrated to Maven-managed modules, perhaps eventually leveraging
 [Maven copy-dependencies](https://maven.apache.org/plugins/maven-dependency-plugin/copy-dependencies-mojo.html).
 
+# Sponsor
+
+This project is sponsored by [ChangeNode.com](https://changenode.com/) - if you would like to add easy automatic updates, 
+crash reporting, analytics, etc. to your Java/JavaFX desktop application, go check it out.
+
 # Usage
 
 Once everything is installed (see below) it's really easy to use:
