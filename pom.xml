@@ -378,6 +378,8 @@
                                         <arg>--strip-native-commands --strip-debug --no-header-files --no-man-pages
                                             --compress=2
                                         </arg>
+                                        <arg>--type</arg>
+                                        <arg>msi</arg>
                                         <arg>--name</arg>
                                         <arg>TestApp</arg>
                                         <arg>--win-menu</arg>
