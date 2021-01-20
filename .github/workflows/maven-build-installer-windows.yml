@@ -44,3 +44,11 @@ jobs:
       run: mvn -B clean install --file pom.xml
       env:
         MAVEN_OPTS: "--add-modules jdk.incubator.jpackage"
+    - name: Update Automatic Release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN}}"
+        automatic_release_tag: "Windows-latest"
+        prerelease: true
+        title: "Windows Development Build"
+        files: ./target/TestApp-1.0.msi
