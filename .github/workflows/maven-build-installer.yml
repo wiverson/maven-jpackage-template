@@ -28,3 +28,5 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
     - name: Build with Maven
       run: mvn -B clean install --file pom.xml
+      env:
+        MAVEN_OPTS: "--add-modules jdk.incubator.jpackage"
