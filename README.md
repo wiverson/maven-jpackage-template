@@ -2,13 +2,13 @@
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/maven-jpackage-template/community)
 
-### Goal
+# Goal
 
 1. Build nice, small cross-platform JavaFX-based desktop apps with native installers
 2. Continue to use the standard Maven dependency system to automatically manage transitive dependencies
 3. Just use Maven - no shell scripts.
 
-### Problems
+## Problems
 
 The jlink/jpackage tools which provide nice, small installers rely on the new Java module system. This system is a bit
 difficult to use, as it expects the various Java libraries used by an application to add additional information (
@@ -18,7 +18,7 @@ In the worst-case scenario, every time a developer adds a standard Maven depende
 to module problems. This presents a grim choice - either give up on jpackage to produce nice, tiny installers, or give
 up on Maven dependency management and return to the bad old days of shell scripts and manually managing library paths.
 
-### Solution
+## Solution
 
 In this sample project, these problems are manged through the use of a single
 application-scoped [shaded jar](https://maven.apache.org/plugins/maven-shade-plugin/). The application's normal Maven
@@ -38,10 +38,25 @@ This also provides an eventual path for migrating to fully modularized libraries
 eventually the build could be migrated to Maven-managed modules, perhaps eventually leveraging
 [Maven copy-dependencies](https://maven.apache.org/plugins/maven-dependency-plugin/copy-dependencies-mojo.html).
 
+## Cool Features
+
+Here are few cool things in this template:
+
+- Only uses Maven. No shell scripts required.
+- Includes GitHub Actions to build both macOS and Windows Installers (.github/workflows).
+- Demonstrates setting the application icon
+- Builds a .dmg on macOS and .msi on Windows
+- Now bundles the JavaFX SDK & modules to simplify getting started.
+- Template includes examples of many JavaFX / native desktop integration for both macOS & Windows.
+    - Drag & drop with Finder / Explorer
+    - Change the Dock icon dynamically on macOS
+    - Menu on the top for macOS, in the window itself on Windows
+    - Request user attention (bouncing dock icon) on macOS
+
 # Sponsor
 
-This project is sponsored by [ChangeNode.com](https://changenode.com/) - if you would like to add easy automatic updates, 
-crash reporting, analytics, etc. to your Java/JavaFX desktop application, go check it out.
+This project is sponsored by [ChangeNode.com](https://changenode.com/) - if you would like to add easy automatic
+updates, crash reporting, analytics, etc. to your Java/JavaFX desktop application, go check it out.
 
 # Usage
 
@@ -136,7 +151,7 @@ A: As of this writing, the Windows options will work, but the lack of a version 
 manually uninstall and reinstall via the Windows Control Panel to update to a new version. Not a big deal for
 development, but when you go to install an update you'll have to uninstall/reinstall manually.  
 In a proper CI build, the installer version should be set by the CI system. Use this project as a starting point and add
-the version info based on your CI approach.
+the version info based on your CI approach. Perhaps some combination of a GUID and/or timestamp.
 
 Q: What about macOS Signing?
 
