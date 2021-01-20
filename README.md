@@ -7,7 +7,7 @@
 1. Build nice, small cross-platform JavaFX-based desktop apps with native installers (apx 20-30mb installers)
 2. Continue to use the standard Maven dependency system to automatically manage transitive dependencies
 3. Just use Maven - no shell scripts required.
-4. Generate macOS and Windows installers automatically with GitHub Actions
+4. Generate macOS (.dmg) and Windows (.msi) installers automatically with GitHub Actions 
 
 ## Problems
 
