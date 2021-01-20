@@ -1,12 +1,13 @@
-# maven-jpackage-template
+# JavaFX + jpackage + Maven = Native Desktop Apps
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/maven-jpackage-template/community)
 
 # Goal
 
-1. Build nice, small cross-platform JavaFX-based desktop apps with native installers
+1. Build nice, small cross-platform JavaFX-based desktop apps with native installers (apx 20-30mb installers)
 2. Continue to use the standard Maven dependency system to automatically manage transitive dependencies
-3. Just use Maven - no shell scripts.
+3. Just use Maven - no shell scripts required.
+4. Generate macOS and Windows installers automatically with GitHub Actions
 
 ## Problems
 
@@ -72,13 +73,11 @@ To do everything up until the actual installer generation...
 
 # Installation
 
-1. Install [Java 15](https://adoptopenjdk.net/). Verify this by opening a fresh Terminal or Command Prompt and
+1. Install [Java 15](https://adoptopenjdk.net/) or later. Verify this by opening a fresh Terminal or Command Prompt and
    typing `java --version`.
-2. Install [Apache Maven](http://maven.apache.org/install.html) and make sure it's on your path. Verify this by opening
-   a fresh Terminal or Command Prompt and typing `mvn --version`.
+2. Install [Apache Maven 3.6.3](http://maven.apache.org/install.html) or later and make sure it's on your path. Verify 
+   this by opening a fresh Terminal or Command Prompt and typing `mvn --version`.
 3. Clone/download this project.
-4. The project now includes the JavaFX jmods and SKD for macOS and Windows. You can update these by
-   visiting [platform-specific JavaFX](https://gluonhq.com/products/javafx/).
 5. Add the jpackage configuration to your MAVEN_OPTS for your shell environment (described in more detail below). As of
    Java 15, you can verify this is working by observing the warning about using an incubator project. Here's what the
    output looks like on Windows - notice the first line WARNING. Java 16 should bundle jpackage, which will allow you to
@@ -116,7 +115,9 @@ For example, on macOS, this can be done by adding to the following line to the `
 `export MAVEN_OPTS="--add-modules jdk.incubator.jpackage"`
 
 Current versions of Windows 10 have a nice UI for adding an environment variable. You can find it in the modern control
-panel via search - just start a search for "env" and that should bring up the appropriate control panel.
+panel via search - just start a search for "env" and that should bring up the appropriate control panel. Note that on 
+Windows, you don't need the quote marks - here's a
+[screenshot illustrating the proper configuration for a Windows 10 environment](https://github.com/wiverson/maven-jpackage-template/issues/2).
 
 Unfortunately, as of this writing adding this entry to the IntelliJ options for Maven (either in the IntelliJ Maven JVM
 importer UI or via `project-directory/.mvn/jvm.config`) will break the Maven sync. This bug is tracked by JetBrains as
@@ -131,47 +132,55 @@ Problems? Make sure everything is installed and working right!
 - Compiler not recognizing the --release option? Probably on an old JDK.
 - Can't find jpackage? Make sure the MAVEN_OPTS are set right.
 - Can't find jdeps? Probably on an old JDK.
-- Can't find javafx.base? Probably didn't install the javafx jmods and/or sdk correctly. Check the screenshot above to
-  make sure your directory structure is right. The build will NOT work out of the box until you install one of these! (
-  This might change in the future)
+ 
+If you need consulting support, feel free to reach out to [ChangeNode.com](https://changenode.com/).
 
-# Miscellaneous
+# Miscellaneous Q&A
 
-Q: What about the Linux versions? Just macOS and Windows? You Linux-hating monster!
+##### Q: What about the Linux versions? Just macOS and Windows? You Linux-hating monster!
 
 A: I'm pretty sure if you are a Java developer working on Linux you can figure out how to copy-and-paste the relevant
 sections of pom.xml to get it working with Linux. I love Linux for server-side work, but I don't use it for desktop.
 It's a more productive use of my time to focus on the two (fussy)
-macOS and Windows platforms for now. That said, feel free to [reach out](https://doublerobot.com/contact)
+macOS and Windows platforms for now. That said, feel free to [reach out](https://changenode.com/)
 if you'd like to incentivize me to add Linux, or send a PR if you are interested...  :)
 
-Q: Any Tips for Windows?
+##### Q: Any Tips for Windows?
 
-A: As of this writing, the Windows options will work, but the lack of a version number means that right now you have to
+A:
+The [Windows GitHub workflow](https://github.com/wiverson/maven-jpackage-template/blob/main/.github/workflows/maven-build-installer-windows.yml)
+for this project downloads the Wix Installer toolkit and adds it to the path to automatically
+build the Windows installer. On your local dev machine just install [WiX Toolset](https://wixtoolset.org/)
+locally instead - it'll be a lot faster.
+
+As of this writing, the Windows options will work, but the lack of a version number means that right now you have to
 manually uninstall and reinstall via the Windows Control Panel to update to a new version. Not a big deal for
 development, but when you go to install an update you'll have to uninstall/reinstall manually.  
+
 In a proper CI build, the installer version should be set by the CI system. Use this project as a starting point and add
-the version info based on your CI approach. Perhaps some combination of a GUID and/or timestamp.
+the version info based on your CI and versioning approach. Perhaps some combination of a GUID and/or timestamp.
 
-Q: What about macOS Signing?
+##### Q: What about macOS Signing?
 
-A: This is a good starting point, but you will likely need to add additional options to ship - most notably, you may
-want to sign and/or notarize your app for macOS. As of this writing, you may want to check out tools such
+A: You will likely need to add additional options to ship properly on macOS - most notably, you will want to sign
+and notarize your app for macOS to make everything work without end user warnings. Check out tools such
 as [Gon](https://github.com/nordcloud/gon)
 or [this command-line signing tutorial](https://blog.dgunia.de/2020/02/12/signed-macos-programs-with-java-14/).
 
-Q: Can I generate macOS installers on Windows, or Windows installers on macOS?
+##### Q: Can I generate macOS installers on Windows, or Windows installers on macOS?
 
-A: [No.](https://openjdk.java.net/jeps/392) I strongly suggest some kind of CI system that supports both macOS and
-Windows runners if you are doing this professionally. If you are looking for someone to help out with setting this up,
-feel free to [make contact](https://doublerobot.com/contact).
+A: [No,](https://openjdk.java.net/jeps/392) but this project uses GitHub workflows to generate
+[macOS](https://github.com/wiverson/maven-jpackage-template/blob/main/.github/workflows/maven-build-installer.yml) 
+and
+[Windows](https://github.com/wiverson/maven-jpackage-template/blob/main/.github/workflows/maven-build-installer-windows.yml) installers automatically, regardless of your development platform. This means that (for example)
+you could do your dev work on Linux and rely on the GitHub Actions to generate macOS and Windows builds.
+If you need help, reach out to [ChangeNode.com](https://changenode.com/).
 
-Q: Does this support auto-updating, crash reporting, or analytics?
+##### Q: Does this support auto-updating, crash reporting, or analytics?
 
-A: No... but that sure would be interesting. If you are looking for someone to help out with setting this up, feel free
-to [make contact](https://changenode.com/)...
+A: No... for that, you should check out [ChangeNode.com](https://changenode.com/)!
 
-Q: I'd rather use shell scripts.
+##### Q: I'd rather use shell scripts.
 
 A: Cool - check out [JPackageScriptFX](https://github.com/dlemmermann/JPackageScriptFX) - the original shell scripts
 that were the start of this project.
