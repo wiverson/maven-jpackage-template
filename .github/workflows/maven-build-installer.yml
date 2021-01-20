@@ -30,3 +30,20 @@ jobs:
       run: mvn -B clean install --file pom.xml
       env:
         MAVEN_OPTS: "--add-modules jdk.incubator.jpackage"
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_name: macOS Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./target/TestApp.dmg
+        asset_name: TestApp-1.0.dmg
+        asset_content_type: application/octet-stream
