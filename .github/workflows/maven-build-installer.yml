@@ -38,24 +38,3 @@ jobs:
           prerelease: true
           title: "macOS Development Build"
           files: ./target/TestApp-1.0.dmg
-
-#      - name: Create Release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: development-build-${{ env.GITHUB_WORKFLOW }}-${{ env.GITHUB_RUN_NUMBER }}
-#          release_name: macOS Release ${{ env.GITHUB_RUN_NUMBER }}
-#          draft: false
-#          prerelease: true
-#      - name: Upload Release Asset
-#        id: upload-release-asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: ./target/TestApp-1.0.dmg
-#          asset_name: TestApp-1.0.dmg
-#          asset_content_type: application/octet-stream
