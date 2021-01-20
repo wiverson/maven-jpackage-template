@@ -47,6 +47,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./target/TestApp.dmg
+        asset_path: ./target/TestApp-1.0.dmg
         asset_name: TestApp-1.0.dmg
         asset_content_type: application/octet-stream
