@@ -37,7 +37,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: development-build
-        release_name: macOS Release ${{ github.ref }}
+        release_name: macOS Release ${{ GITHUB_RUN_ID }}
         draft: false
         prerelease: true
     - name: Upload Release Asset
