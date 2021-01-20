@@ -35,9 +35,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
+        tag_name: development-build
         release_name: macOS Release ${{ github.ref }}
         draft: false
-        prerelease: false
+        prerelease: true
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
