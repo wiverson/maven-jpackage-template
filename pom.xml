@@ -10,12 +10,18 @@
 
     <properties>
         <main-class>com.doublerobot.HelloWorld</main-class>
-        <!-- This should be the . version of the artifactId -->
+        <!-- This should be the . version of the project artifactId -->
         <java-mod-name>maven.jpackage.template</java-mod-name>
 
+        <!-- These version numbers are used in both the macOS and Windows installed version -->
         <javafx-mods-version>javafx-jmods-15.0.1</javafx-mods-version>
         <javafx-libs-version>javafx-sdk-15.0.1</javafx-libs-version>
 
+        <!-- These are the modules explicitly used by the project. You may want to add/remove if you
+         are using other modules. -->
+        <modules-in-use>javafx.base,javafx.controls,javafx.graphics,java.logging</modules-in-use>
+
+        <!-- Eliminate warnings about UTF-8 in the build -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -32,9 +38,9 @@
             <artifactId>javafx-controls</artifactId>
             <version>15</version>
         </dependency>
-        <!-- This dependency is a normal Maven dependency. It brings in other transitive dependencies as well.
-         We want to include the contents of this (and all of the other transitive dependencies in our final
-         shaded master jar. This dependency generates fake data for testing. -->
+        <!-- This dependency is a normal Maven dependency, here mainly as an example. It brings in other transitive
+         dependencies as well. We want to include the contents of this (and all of the other transitive dependencies
+         in our final shaded master jar. This particular dependency generates fake data for testing. -->
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
@@ -87,14 +93,18 @@
                 </configuration>
             </plugin>
             <plugin>
+                <!-- Plugin to make working with JavaFX nicer. See https://github.com/openjfx/javafx-maven-plugin -->
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.5</version>
                 <configuration>
-                    <mainClass>com.doublerobot.HelloWorld</mainClass>
+                    <mainClass>${main-class}</mainClass>
                 </configuration>
             </plugin>
             <plugin>
+                <!-- The shade plugin is used to generate a merged JAR, which in turn is analyzed to sort out
+                dependencies. It's not actually used to generate an executable JAR, as you might see in other
+                projects. -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
@@ -146,7 +156,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.0.0</version>
-                <!-- We use the Ant task here to unzip the shaded jar to make jdeps have a new directory to work with -->
+                <!-- We use the Ant task here to unzip the shaded jar, which we then pass to make jdeps later. -->
                 <executions>
                     <execution>
                         <id>prepare</id>
@@ -183,7 +193,7 @@
                             <toolName>jdeps</toolName>
                             <args>
                                 <arg>--module-path</arg>
-                                <arg>${project.basedir}/${javafx-libs-version}/lib/</arg>
+                                <arg>${javafx.libs}</arg>
                                 <arg>--add-modules</arg>
                                 <arg>javafx.base,javafx.controls,javafx.graphics,java.logging</arg>
                                 <arg>--generate-module-info</arg>
@@ -261,10 +271,10 @@
                                         <arg>--compress=2</arg>
                                         <arg>--module-path</arg>
                                         <arg>
-                                            ${java.home}/jmods/:${project.build.directory}/modules/:${project.basedir}/${javafx-mods-version}/
+                                            ${java.home}/jmods/:${project.build.directory}/modules/:${javafx.mods}
                                         </arg>
                                         <arg>--add-modules</arg>
-                                        <arg>${java-mod-name},javafx.base,javafx.controls,javafx.graphics,java.logging
+                                        <arg>${java-mod-name},${modules-in-use}
                                         </arg>
                                         <arg>--launcher</arg>
                                         <arg>${project.artifactId}=${java-mod-name}/${main-class}</arg>
@@ -290,6 +300,10 @@
                     <family>mac</family>
                 </os>
             </activation>
+            <properties>
+                <javafx.libs>${project.basedir}/macos-javafx/${javafx-libs-version}/lib/</javafx.libs>
+                <javafx.mods>${project.basedir}/macos-javafx/${javafx-mods-version}/</javafx.mods>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -316,10 +330,10 @@
                                         <arg>${project.basedir}/app-icon.icns</arg>
                                         <arg>--module-path</arg>
                                         <arg>
-                                            ${java.home}/jmods/:${project.build.directory}/modules/:${project.basedir}/${javafx-mods-version}/
+                                            ${java.home}/jmods/:${project.build.directory}/modules/:${javafx.mods}/
                                         </arg>
                                         <arg>--add-modules</arg>
-                                        <arg>${java-mod-name},javafx.base,javafx.controls,javafx.graphics,java.logging
+                                        <arg>${java-mod-name},${modules-in-use}
                                         </arg>
                                         <arg>-m</arg>
                                         <arg>${java-mod-name}/${main-class}</arg>
@@ -340,6 +354,10 @@
                     <family>windows</family>
                 </os>
             </activation>
+            <properties>
+                <javafx.libs>${project.basedir}/windows-javafx/${javafx-libs-version}/lib/</javafx.libs>
+                <javafx.mods>${project.basedir}/windows-javafx/${javafx-mods-version}/</javafx.mods>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -369,10 +387,10 @@
                                         <arg>${project.basedir}\app-icon.ico</arg>
                                         <arg>--module-path</arg>
                                         <arg>
-                                            ${java.home}\jmods\;${project.build.directory}\modules\;${project.basedir}\${javafx-mods-version}/
+                                            ${java.home}\jmods\;${project.build.directory}\modules\;${javafx.mods}/
                                         </arg>
                                         <arg>--add-modules</arg>
-                                        <arg>${java-mod-name},javafx.base,javafx.controls,javafx.graphics,java.logging
+                                        <arg>${java-mod-name},${modules-in-use}
                                         </arg>
                                         <arg>-m</arg>
                                         <arg>${java-mod-name}/${main-class}</arg>
