@@ -30,23 +30,32 @@ jobs:
         run: mvn -B clean install --file pom.xml
         env:
           MAVEN_OPTS: "--add-modules jdk.incubator.jpackage"
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update Automatic Release
+        uses: marvinpinto/action-automatic-releases@latest
         with:
-          tag_name: development-build-${{ env.GITHUB_WORKFLOW }}-${{ env.GITHUB_RUN_NUMBER }}
-          release_name: macOS Release ${{ env.GITHUB_RUN_NUMBER }}
-          draft: false
+          repo_token: "${{ secrets.GITHUB_TOKEN}}"
+          automatic_release_tag: "macOS-latest"
           prerelease: true
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/TestApp-1.0.dmg
-          asset_name: TestApp-1.0.dmg
-          asset_content_type: application/octet-stream
+          title: "macOS Development Build"
+          files: ./target/TestApp-1.0.dmg
+
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: development-build-${{ env.GITHUB_WORKFLOW }}-${{ env.GITHUB_RUN_NUMBER }}
+#          release_name: macOS Release ${{ env.GITHUB_RUN_NUMBER }}
+#          draft: false
+#          prerelease: true
+#      - name: Upload Release Asset
+#        id: upload-release-asset
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ./target/TestApp-1.0.dmg
+#          asset_name: TestApp-1.0.dmg
+#          asset_content_type: application/octet-stream
