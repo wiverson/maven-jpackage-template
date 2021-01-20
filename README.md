@@ -1,4 +1,6 @@
-# JavaFX + jpackage + Maven = Native Desktop Apps
+# JavaFX + Maven = Native Desktop Apps
+
+JavaFX + jpackage + Maven template project for generating native desktop applications.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/maven-jpackage-template/community)
 
@@ -7,7 +9,8 @@
 1. Build nice, small cross-platform JavaFX-based desktop apps with native installers (apx 20-30mb installers)
 2. Continue to use the standard Maven dependency system to automatically manage transitive dependencies
 3. Just use Maven - no shell scripts required.
-4. Generate macOS (.dmg) and Windows (.msi) installers automatically with GitHub Actions 
+4. Generate [macOS (.dmg) and Windows (.msi) installers](https://github.com/wiverson/maven-jpackage-template/releases)
+   automatically with [GitHub Actions](https://github.com/wiverson/maven-jpackage-template/tree/main/.github/workflows) 
 
 ## Problems
 
@@ -28,12 +31,12 @@ dependencies are merged into a single JAR, and then jdeps automatically generate
 While this is a *terrible* strategy for libraries, it works just fine for end-user desktop applications.
 
 So, what we have here is a pretty small, simple Maven project template that can be used to build nice, small native
-installers for a JavaFX application using only Maven, Java 15, and the jpackage required macOS XCode or
-Windows [WiX Toolset](https://wixtoolset.org/).
+installers for a JavaFX application using only Maven, Java 15, and jpackage. In addition, on macOS XCode is required,
+and on Windows the free [WiX Toolset](https://wixtoolset.org/).
 
-On macOS and Windows, these installers are coming in at around 30-40MB. This demonstration app includes several native
+On macOS and Windows, these installers are coming in at around 30-40mb. This demonstration app includes several native
 desktop demonstration features - for example, drag-and-drop from the Finder/Explorer, as well as a few macOS Dock
-integration examples. The "Hello World" versions are closer to 30MB than 40MB.
+integration examples. The "Hello World" versions are closer to 30mb than 40mb.
 
 This also provides an eventual path for migrating to fully modularized libraries. As libraries are converted to modules,
 eventually the build could be migrated to Maven-managed modules, perhaps eventually leveraging
@@ -98,7 +101,7 @@ OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 7. If you are running on Windows, install the [Wix 3 binaries](https://github.com/wixtoolset/wix3/releases/). As of this
    writing, merely installing Wix via the installer was sufficient for jpackage to find it.
 8. Once all that is working, you should be able to just run `mvn clean install` from the root of the project to generate
-   the `target\TestApp.dmg` or `target\TestApp.exe` (installer). For reference, here is a complete run log
+   the `target\TestApp.dmg` or `target\TestApp.msi` (installer). For reference, here is a complete run log
    for [a successful run on Windows](docs/sample-windows-run.md).
 
 Because these builds use stripped down JVM images, the final installers on both macOS and Windows are in the 30-40MB
@@ -136,6 +139,14 @@ Problems? Make sure everything is installed and working right!
 If you need consulting support, feel free to reach out to [ChangeNode.com](https://changenode.com/).
 
 # Miscellaneous Q&A
+
+##### Q: A few things seem to be hard-coded...?
+
+A: Yeah. There are a lot of moving parts in a build script like this. Most notably, the name of the generated
+application is set to Test-App-1.0 in a few places. Unfortunately, this is kind of complicated - for example,
+the name of the build application exists both in the GitHub Actions and the pom.xml. I tried to strike a balance
+between using various properties to avoid duplication and (worst case) degenerating into a sea of strange expressions.
+Hopefully you can follow everything, but if you have questions or need consulting support you can always reach out.
 
 ##### Q: What about the Linux versions? Just macOS and Windows? You Linux-hating monster!
 
