@@ -6,7 +6,9 @@ JavaFX + jpackage + Maven template project for generating native desktop applica
 
 # Goal
 
-1. Build nice, small cross-platform JavaFX-based desktop apps with native installers (apx 20-30mb installers)
+1. Build nice, small cross-platform JavaFX-based desktop apps with native installers 
+   - Apx 20-30mb .dmg and .msi installers - check out the example builds in 
+     [releases](https://github.com/wiverson/maven-jpackage-template/releases).
 2. Continue to use the standard Maven dependency system to automatically manage transitive dependencies
 3. Just use Maven - no shell scripts required.
 4. Generate [macOS (.dmg) and Windows (.msi) installers](https://github.com/wiverson/maven-jpackage-template/releases)
