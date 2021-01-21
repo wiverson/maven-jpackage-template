@@ -335,7 +335,7 @@
                                         <arg>--add-modules</arg>
                                         <arg>${java-mod-name},${modules-in-use}
                                         </arg>
-                                        <arg>-m</arg>
+                                        <arg>--module</arg>
                                         <arg>${java-mod-name}/${main-class}</arg>
                                         <arg>--dest</arg>
                                         <arg>${project.build.directory}</arg>
@@ -394,7 +394,7 @@
                                         <arg>--add-modules</arg>
                                         <arg>${java-mod-name},${modules-in-use}
                                         </arg>
-                                        <arg>-m</arg>
+                                        <arg>--module</arg>
                                         <arg>${java-mod-name}/${main-class}</arg>
                                         <arg>--dest</arg>
                                         <arg>${project.build.directory}</arg>
