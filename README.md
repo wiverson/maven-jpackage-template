@@ -78,15 +78,15 @@ To do everything up until the actual installer generation...
 
 # Installation
 
-1. Install [Java 15](https://adoptopenjdk.net/) or later. Verify this by opening a fresh Terminal or Command Prompt and
-   typing `java --version`.
-2. Install [Apache Maven 3.6.3](http://maven.apache.org/install.html) or later and make sure it's on your path. Verify
-   this by opening a fresh Terminal or Command Prompt and typing `mvn --version`.
+1. Install [Java 15](https://adoptopenjdk.net/) or later. 
+   - Verify by opening a fresh Terminal/Command Prompt and typing `java --version`.
+2. Install [Apache Maven 3.6.3](http://maven.apache.org/install.html) or later and make sure it's on your path.
+   - Verify this by opening a fresh Terminal/Command Prompt and typing `mvn --version`.
 3. Clone/download this project.
-5. Add the jpackage configuration to your MAVEN_OPTS for your shell environment (described in more detail below). As of
-   Java 15, you can verify this is working by observing the warning about using an incubator project. Here's what the
-   output looks like on Windows - notice the first line WARNING. Java 16 should bundle jpackage, which will allow you to
-   skip this step.
+5. On Java 15, add the jpackage configuration to your MAVEN_OPTS for your shell environment (described in more detail below). 
+   - On Java 15, verify this is working by typing `mvn --version` and notice the warning about using an incubator project.
+   - Java 16 is expected to bundle jpackage, which will allow you to skip this step.
+   - Here's what the output looks like on Windows - notice the first line WARNING. 
 
 ``` 
 C:\Users\wiver\src\shade-test>mvn --version
@@ -98,13 +98,13 @@ Default locale: en_US, platform encoding: Cp1252
 OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 ```
 
-6. If you are running on macOS, make sure you have XCode installed and accepted any needed agreements. Try opening
-   Terminal and running the command `hdiutil` and make sure it's on the path.
-7. If you are running on Windows, install the [Wix 3 binaries](https://github.com/wixtoolset/wix3/releases/). As of this
-   writing, merely installing Wix via the installer was sufficient for jpackage to find it.
-8. Once all that is working, you should be able to just run `mvn clean install` from the root of the project to generate
-   the `target\TestApp.dmg` or `target\TestApp.msi` (installer). For reference, here is a complete run log
-   for [a successful run on Windows](docs/sample-windows-run.md).
+6. macOS: verify XCode is installed and needed agreements accepted.
+   - Verify in Terminal with the command `hdiutil`.
+7. Windows: install [Wix 3 binaries](https://github.com/wixtoolset/wix3/releases/). 
+   - As of this writing, merely installing Wix via the installer was sufficient for jpackage to find it.
+8. Final step: run `mvn clean install` from the root of the project to generate
+   the `target\TestApp.dmg` or `target\TestApp.msi` (installer). 
+   - For reference, here is a complete run log for [a successful run on Windows](docs/sample-windows-run.md).
 
 Because these builds use stripped down JVM images, the final installers on both macOS and Windows are in the 30-40MB
 range.
