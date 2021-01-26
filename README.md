@@ -26,7 +26,7 @@ up on Maven dependency management and return to the bad old days of shell script
 
 ## Solution
 
-In this sample project, these problems are manged through the use of a single
+In this sample project, these problems are managed through the use of a single
 application-scoped [shaded jar](https://maven.apache.org/plugins/maven-shade-plugin/). The application's normal Maven
 dependencies are merged into a single JAR, and then jdeps automatically generates the module-info.java.
 
