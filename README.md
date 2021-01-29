@@ -1,7 +1,7 @@
 # JavaFX + Maven = Native Desktop Apps
 
-[JavaFX](https://openjfx.io) + [jpackage](https://docs.oracle.com/en/java/javase/15/docs/specs/man/jpackage.html)
- + [Maven](http://maven.apache.org) template project for generating native desktop applications.
+[JavaFX](https://openjfx.io) + [jpackage](https://docs.oracle.com/en/java/javase/15/docs/specs/man/jpackage.html) +
+[Maven](http://maven.apache.org) template project for generating native desktop applications.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/maven-jpackage-template/community)
 
