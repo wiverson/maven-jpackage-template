@@ -1,24 +1,25 @@
 # JavaFX + Maven = Native Desktop Apps
 
-JavaFX + jpackage + Maven template project for generating native desktop applications.
+[JavaFX](https://openjfx.io) + [jpackage](https://docs.oracle.com/en/java/javase/15/docs/specs/man/jpackage.html)
+ + [Maven](http://maven.apache.org) template project for generating native desktop applications.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/maven-jpackage-template/community)
 
 # Goal
 
-1. Build nice, small cross-platform JavaFX-based desktop apps with native installers
+1. Build nice, small cross-platform [JavaFX](https://openjfx.io)-based desktop apps with native installers
     - Apx 20-30mb .dmg and .msi installers - check out the example builds in
       [releases](https://github.com/wiverson/maven-jpackage-template/releases).
-2. Continue to use the standard Maven dependency system to automatically manage transitive dependencies
-3. Just use Maven - no shell scripts required.
-4. Generate [macOS (.dmg) and Windows (.msi) installers](https://github.com/wiverson/maven-jpackage-template/releases)
+2. Just use Maven - no shell scripts required. Use standard Maven dependency system to automatically
+   manage ordinary JAR dependencies (including transitive Maven dependencies).
+3. Generate [macOS (.dmg) and Windows (.msi) installers](https://github.com/wiverson/maven-jpackage-template/releases)
    automatically with [GitHub Actions](https://github.com/wiverson/maven-jpackage-template/tree/main/.github/workflows)
 
 ## Problems
 
 The jlink/jpackage tools which provide nice, small installers rely on the new Java module system. This system is a bit
-difficult to use, as it expects the various Java libraries used by an application to add additional information (
-typically either via extra manifest entries or a new, compiled module-info.java/.class).
+difficult to use, as it expects Java libraries to add module information (typically either via extra manifest 
+entries or a new, compiled module-info.java/.class).
 
 In the worst-case scenario, every time a developer adds a standard Maven dependency, the entire build process breaks due
 to module problems. This presents a grim choice - either give up on jpackage to produce nice, tiny installers, or give
@@ -181,6 +182,13 @@ Problems? Make sure everything is installed and working right!
 If you need consulting support, feel free to reach out to [ChangeNode.com](https://changenode.com/).
 
 # Miscellaneous Q&A
+
+##### Q: What about the javafx.web.jmod files? I'm getting errors when I'm trying to use javafx.web?
+
+A: GitHub won't allow cloning a template if the source has files over 10mb in size. The javafx.web components basically
+bundle a full native web browser under the covers. As of JavaFX 15 the javafx.web.jmod is roughly 25mb in size. If you
+need it, you can [download it](https://gluonhq.com/products/javafx/) and install it in the JavaFX projects in your
+local project.
 
 ##### Q: A few things seem to be hard-coded...?
 
