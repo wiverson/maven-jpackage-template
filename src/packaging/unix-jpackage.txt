@@ -4,3 +4,4 @@
 --add-modules ${java-mod-name},${modules-in-use}
 --module ${java-mod-name}/${main-class}
 --dest ${project.build.directory}
+--verbose
