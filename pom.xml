@@ -16,6 +16,8 @@
         <!-- These version numbers are used in both the macOS and Windows profiles -->
         <javafx-mods-version>javafx-jmods-15.0.1</javafx-mods-version>
         <javafx-libs-version>javafx-sdk-15.0.1</javafx-libs-version>
+        <javafx.libs>${project.basedir}/${platform}-javafx/${javafx-libs-version}/lib/</javafx.libs>
+        <javafx.mods>${project.basedir}/${platform}-javafx/${javafx-mods-version}/</javafx.mods>
 
         <!-- These are the modules explicitly used by the project. You may want to add/remove if you
          are using other modules. -->
@@ -49,6 +51,13 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/packaging</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}/packaging</targetPath>
+            </resource>
+        </resources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -174,15 +183,16 @@
                 </executions>
             </plugin>
             <plugin>
+                <!-- https://github.com/wiverson/jtoolprovider-plugin -->
                 <groupId>io.github.wiverson</groupId>
                 <artifactId>jtoolprovider-plugin</artifactId>
                 <version>${jtoolprovider.version}</version>
-                <!-- We use the jdeps tool here on the exploded directory to automatically generate a module-info.java
-                file for the entire shaded jar. You'll notice that we are explicitly passing in the JavaFX modules here -
-                you may want to tweak this as you use (or don't use) different modules. The smaller the set of modules,
-                the smaller the final app will be.
-                -->
                 <executions>
+                    <!-- We use the jdeps tool here on the exploded directory to automatically generate a module-info.java
+                    file for the entire shaded jar. You'll notice that we are explicitly passing in the JavaFX modules here -
+                    you may want to tweak this as you use (or don't use) different modules. The smaller the set of modules,
+                    the smaller the final app will be.
+                    -->
                     <execution>
                         <id>jdeps</id>
                         <phase>package</phase>
@@ -197,6 +207,22 @@
                             <args>
                                 <arg>${project.build.directory}/shaded-jar/${project.artifactId}.jar</arg>
                             </args>
+                        </configuration>
+                    </execution>
+                    <!-- The command that actually generates the installer. The options for each platform
+                    are found the /src/packaging directory. These files are copied into the target directory by
+                    the Maven resources plugin, which does the filtering to replace the original values with
+                    the actual Maven properties.
+                    -->
+                    <execution>
+                        <id>jpackage</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>java-tool</goal>
+                        </goals>
+                        <configuration>
+                            <toolName>jpackage</toolName>
+                            <args>@${project.build.directory}/packaging/${platform}-jpackage.txt</args>
                         </configuration>
                     </execution>
                 </executions>
@@ -230,7 +256,6 @@
             </plugin>
         </plugins>
     </build>
-
     <profiles>
         <profile>
             <id>add-jlink-package</id>
@@ -279,102 +304,42 @@
             </build>
         </profile>
 
-        <!-- We use the built-in Maven profile activation system to automatically bind either the macOS or Windows
-         profile to the install phase.  The configuration options for jpackage are wildly platform specific. These
-         are workable minimal options - depending on your application, you may wish to custom further.
+        <!-- We use the built-in Maven profile activation system to set the platform property.
+        These properties are then use to build the directory paths to the platform specific resources.
+
          -->
         <profile>
-            <id>build-mac-installer</id>
+            <id>mac-active</id>
             <activation>
                 <os>
                     <family>mac</family>
                 </os>
             </activation>
             <properties>
-                <javafx.libs>${project.basedir}/macos-javafx/${javafx-libs-version}/lib/</javafx.libs>
-                <javafx.mods>${project.basedir}/macos-javafx/${javafx-mods-version}/</javafx.mods>
+                <platform>mac</platform>
             </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.github.wiverson</groupId>
-                        <artifactId>jtoolprovider-plugin</artifactId>
-                        <version>${jtoolprovider.version}</version>
-                        <executions>
-                            <execution>
-                                <id>jpackage-mac-installer</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>java-tool</goal>
-                                </goals>
-                                <configuration>
-                                    <toolName>jpackage</toolName>
-                                    <jlinkOptions>--strip-native-commands --strip-debug --no-header-files --no-man-pages
-                                        --compress=2
-                                    </jlinkOptions>
-                                    <name>TestApp</name>
-                                    <icon>${project.basedir}/app-icon.icns</icon>
-                                    <modulePath>
-                                        ${java.home}/jmods/:${project.build.directory}/modules/:${javafx.mods}/
-                                    </modulePath>
-                                    <addModules>${java-mod-name},${modules-in-use}</addModules>
-                                    <module>${java-mod-name}/${main-class}</module>
-                                    <dest>${project.build.directory}</dest>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
         <profile>
-            <id>build-win-installer</id>
+            <id>windows-active</id>
             <activation>
                 <os>
                     <family>windows</family>
                 </os>
             </activation>
             <properties>
-                <javafx.libs>${project.basedir}/windows-javafx/${javafx-libs-version}/lib/</javafx.libs>
-                <javafx.mods>${project.basedir}/windows-javafx/${javafx-mods-version}/</javafx.mods>
+                <platform>windows</platform>
             </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.github.wiverson</groupId>
-                        <artifactId>jtoolprovider-plugin</artifactId>
-                        <version>${jtoolprovider.version}</version>
-                        <executions>
-                            <execution>
-                                <id>jpackage-win-installer</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>java-tool</goal>
-                                </goals>
-                                <configuration>
-                                    <toolName>jpackage</toolName>
-                                    <jlinkOptions>--strip-native-commands --strip-debug --no-header-files --no-man-pages
-                                        --compress=2
-                                    </jlinkOptions>
-                                    <type>msi</type>
-                                    <name>TestApp</name>
-                                    <winMenuGroup>Sample</winMenuGroup>
-                                    <icon>${project.basedir}\app-icon.ico</icon>
-                                    <modulePath>
-                                        ${java.home}\jmods\;${project.build.directory}\modules\;${javafx.mods}/
-                                    </modulePath>
-                                    <addModules>${java-mod-name},${modules-in-use}</addModules>
-                                    <module>${java-mod-name}/${main-class}</module>
-                                    <dest>${project.build.directory}</dest>
-                                    <args>
-                                        <arg>--win-menu</arg>
-                                    </args>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+        </profile>
+        <profile>
+            <id>unix-active</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>unix</platform>
+            </properties>
         </profile>
     </profiles>
 </project>

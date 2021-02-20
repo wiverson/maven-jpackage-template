@@ -1,0 +1,10 @@
+--jlink-options "--strip-native-commands --strip-debug --no-header-files --no-man-pages --compress=2"
+--type msi
+--name TestApp
+--win-menu-group Sample
+--icon ${project.basedir}\app-icon.ico
+--module-path ${java.home}\jmods\;${project.build.directory}\modules\;${javafx.mods}/
+--add-modules ${java-mod-name},${modules-in-use}
+--module ${java-mod-name}/${main-class}
+--dest ${project.build.directory}
+--win-menu
