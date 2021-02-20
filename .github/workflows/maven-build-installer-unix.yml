@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -37,4 +36,4 @@ jobs:
         automatic_release_tag: "Ubuntu-latest"
         prerelease: true
         title: "Ubuntu Development Build"
-        files: ./target/TestApp-1.0.deb
+        files: ./target/testapp_1.0-1_amd64.deb
