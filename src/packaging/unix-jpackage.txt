@@ -4,4 +4,4 @@
 --add-modules ${java-mod-name},${modules-in-use}
 --module ${java-mod-name}/${main-class}
 --dest ${project.build.directory}
---icon ${project.basedir}\app-icon.png
+
