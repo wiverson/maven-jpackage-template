@@ -306,17 +306,16 @@
 
         <!-- We use the built-in Maven profile activation system to set the platform property.
         These properties are then use to build the directory paths to the platform specific resources.
-
          -->
         <profile>
-            <id>mac-active</id>
+            <id>unix-active</id>
             <activation>
                 <os>
-                    <family>mac</family>
+                    <family>unix</family>
                 </os>
             </activation>
             <properties>
-                <platform>mac</platform>
+                <platform>unix</platform>
             </properties>
         </profile>
         <profile>
@@ -331,14 +330,14 @@
             </properties>
         </profile>
         <profile>
-            <id>unix-active</id>
+            <id>mac-active</id>
             <activation>
                 <os>
-                    <family>unix</family>
+                    <family>mac</family>
                 </os>
             </activation>
             <properties>
-                <platform>unix</platform>
+                <platform>mac</platform>
             </properties>
         </profile>
     </profiles>
