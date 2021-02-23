@@ -105,7 +105,7 @@ OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 ```
 
 6. macOS: verify XCode is installed and needed agreements accepted.
-    - Verify in Terminal with the command `hdiutil`.
+    - Just launch XCode and accept, or verify in Terminal with the command `sudo xcodebuild -license`.
 7. Windows: install [Wix 3 binaries](https://github.com/wixtoolset/wix3/releases/).
     - As of this writing, merely installing Wix via the installer was sufficient for jpackage to find it.
 8. Final step: run `mvn clean install` from the root of the project to generate the `target\TestApp.dmg`
