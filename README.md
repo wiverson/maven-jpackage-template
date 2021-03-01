@@ -12,7 +12,7 @@
       [releases](https://github.com/wiverson/maven-jpackage-template/releases).
 2. Just use Maven - no shell scripts required. Use standard Maven dependency system to automatically manage ordinary JAR
    dependencies (including transitive Maven dependencies).
-3. Generate [macOS (.dmg) and Windows (.msi) installers](https://github.com/wiverson/maven-jpackage-template/releases)
+3. Generate [macOS (.dmg), Windows (.msi) and Unix (e.g. deb/rpm) packages/installers](https://github.com/wiverson/maven-jpackage-template/releases)
    automatically with [GitHub Actions](https://github.com/wiverson/maven-jpackage-template/tree/main/.github/workflows)
 
 ## Problems
