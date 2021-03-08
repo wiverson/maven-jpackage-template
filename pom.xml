@@ -29,7 +29,7 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <!-- This project uses the https://github.com/wiverson/jtoolprovider-plugin to invoke jdeps and jpackage -->
-        <jtoolprovider.version>1.0.26-SNAPSHOT</jtoolprovider.version>
+        <jtoolprovider.version>1.0.30</jtoolprovider.version>
     </properties>
 
     <dependencies>
@@ -53,6 +53,11 @@
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
         </dependency>
     </dependencies>
 
@@ -129,10 +134,6 @@
                             <goal>collect-modules</goal>
                         </goals>
                         <configuration>
-                            <foundModulesDirectory>${project.build.directory}/declared-modules</foundModulesDirectory>
-                            <notModulesDirectory>${project.build.directory}/declared-notmodules</notModulesDirectory>
-                            <moduleInfoWorkDirectory>${project.build.directory}/module-info-work
-                            </moduleInfoWorkDirectory>
                             <providedModuleDirectories>
                                 <directory>${javafx.mods}</directory>
                                 <directory>${java.home}\jmods\</directory>
@@ -142,6 +143,9 @@
                                 <jar>javafx-graphics-15.jar</jar>
                                 <jar>javafx-base-15.jar</jar>
                             </ignoreJars>
+                            <stripJars>
+                                <jar>HikariCP</jar>
+                            </stripJars>
                         </configuration>
                     </execution>
 
@@ -158,6 +162,9 @@
                         </goals>
                         <configuration>
                             <toolName>jdeps</toolName>
+                            <cleanDirectories>
+                                <directory>${project.build.directory}/work</directory>
+                            </cleanDirectories>
                             <modulePath>${javafx.libs}:${project.build.directory}/dependencies</modulePath>
                             <!--                            <addModules>javafx.base,javafx.controls,javafx.graphics,java.logging</addModules>-->
                             <generateModuleInfo>${project.build.directory}/work</generateModuleInfo>
@@ -214,45 +221,6 @@
         </plugins>
     </build>
     <profiles>
-        <profile>
-            <id>add-jlink-package</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.github.wiverson</groupId>
-                        <artifactId>jtoolprovider-plugin</artifactId>
-                        <version>${jtoolprovider.version}</version>
-                        <!-- jlink here generates an image and launcher for your app, but does not wrap it
-                        with an installer (like jpackage). This execution is not run by default - if you are using
-                        jpackage, it's calling jlink for you anyways, so this would just make the build slower.
-                        It's bound to the verify goal to make sure all of the other plugins run first instead.
-                        From a purist, it would probably make more sense to bind this to install (like jpackage is),
-                        but by putting this on verify it means that you can quickly flip back and forth between
-                        jlink builds (in IntelliJ) and jpackage builds (via command-line Maven runner).
-                        -->
-                        <executions>
-                            <execution>
-                                <id>jlink</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>java-tool</goal>
-                                </goals>
-                                <configuration>
-                                    <toolName>jlink</toolName>
-                                    <args>
-                                        <args>@${project.build.directory}/packaging/${platform}-jlink.txt</args>
-                                    </args>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <!-- We use the built-in Maven profile activation system to set the platform property.
         These properties are then use to build the directory paths to the platform specific resources.
          -->
