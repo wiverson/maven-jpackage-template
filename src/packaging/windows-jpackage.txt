@@ -3,9 +3,9 @@
 --name ${app.name}
 --win-menu-group Sample
 --icon ${project.basedir}\app-icon.ico
---module-path "${java.home}\\jmods\\";"${project.build.directory}\\modules\\";"${project.build.directory}\\module-jars\\";"${javafx.mods}"
---add-modules ${project.artifactId},${modules-in-use}
---module ${project.artifactId}/${main-class}
+--module-path "${java.home}\\jmods\\";"${project.build.directory}\\modules\\";"${javafx.mods}";"${project.build.directory}\\declared-notmodules";"${project.build.directory}\\declared-modules"
+--add-modules ${java-mod-name}
+--module ${java-mod-name}/${main-class}
 --dest ${project.build.directory}
 --win-menu
 --app-version ${app.version}

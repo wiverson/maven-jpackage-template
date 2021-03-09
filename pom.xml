@@ -15,8 +15,11 @@
         <app.name>TestApp</app.name>
         <!-- This converts the build timestamp to a Windows-installer friendly version number. Note that Maven
          generated timestamp is in UTC, not local time.
+         For more information see:
+         https://docs.microsoft.com/en-us/windows/win32/msi/productversion
+         https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/text/SimpleDateFormat.html
          -->
-        <maven.build.timestamp.format>yy.MM.ddkkmm</maven.build.timestamp.format>
+        <maven.build.timestamp.format>yy.w.ukkmm</maven.build.timestamp.format>
         <app.version>${maven.build.timestamp}</app.version>
 
         <!-- This should be the . version of the project artifactId. E.g. if your artifactId is foo-bar this
@@ -172,7 +175,7 @@
                             <cleanDirectories>
                                 <directory>${project.build.directory}/work</directory>
                             </cleanDirectories>
-                            <modulePath>${javafx.libs}:${project.build.directory}/dependencies</modulePath>
+                            <modulePath>${javafx.libs}${path.separator}${project.build.directory}/dependencies</modulePath>
                             <generateModuleInfo>${project.build.directory}/work</generateModuleInfo>
                             <args>
                                 <arg>${project.build.directory}/${project.build.finalName}.jar</arg>
