@@ -176,7 +176,8 @@
                                 <directory>${project.build.directory}/work</directory>
                             </cleanDirectories>
                             <multiRelease>${java.specification.version}</multiRelease>
-                            <modulePath>${java.home}/jmods/:${project.build.directory}/modules:${javafx.mods}/:${project.build.directory}/declared-not-modules:${project.build.directory}/declared-modules
+                            <modulePath>
+                                ${java.home}/jmods/:${project.build.directory}/modules:${javafx.mods}/:${project.build.directory}/declared-not-modules:${project.build.directory}/declared-modules
                             </modulePath>
                             <generateModuleInfo>${project.build.directory}/work</generateModuleInfo>
                             <args>
@@ -222,7 +223,8 @@
                             <modules>
                                 <module>
                                     <file>${project.build.directory}/${project.build.finalName}.jar</file>
-                                    <moduleInfoFile>${project.build.directory}/work/${java-mod-name}/module-info.java
+                                    <moduleInfoFile>
+                                        ${project.build.directory}/work/${java-mod-name}/versions/${java.specification.version}/module-info.java
                                     </moduleInfoFile>
                                 </module>
                             </modules>
