@@ -51,4 +51,4 @@ jobs:
         automatic_release_tag: "Windows-latest"
         prerelease: true
         title: "Windows Development Build"
-        files: ./target/TestApp-1.0.msi
+        files: ./target/*.msi

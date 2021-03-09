@@ -37,4 +37,4 @@ jobs:
           automatic_release_tag: "macOS-latest"
           prerelease: true
           title: "macOS Development Build"
-          files: ./target/TestApp-1.0.dmg
+          files: ./target/*.dmg

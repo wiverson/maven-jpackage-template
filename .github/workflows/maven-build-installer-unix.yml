@@ -36,4 +36,4 @@ jobs:
         automatic_release_tag: "Ubuntu-latest"
         prerelease: true
         title: "Ubuntu Development Build"
-        files: ./target/testapp_1.0-1_amd64.deb
+        files: ./target/*.deb
