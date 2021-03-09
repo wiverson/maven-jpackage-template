@@ -39,7 +39,7 @@
         <maven.compiler.target>15</maven.compiler.target>
 
         <!-- This project uses the https://github.com/wiverson/jtoolprovider-plugin to invoke jdeps and jpackage -->
-        <jtoolprovider.version>1.0.30</jtoolprovider.version>
+        <jtoolprovider.version>1.0.31</jtoolprovider.version>
     </properties>
 
     <dependencies>
