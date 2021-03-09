@@ -1,7 +1,8 @@
 --jlink-options "--strip-native-commands --strip-debug --no-header-files --no-man-pages --compress=2"
---name TestApp
+--name ${app.name}
 --icon ${project.basedir}/app-icon.icns
---module-path ${java.home}/jmods/:${project.build.directory}/modules/:${javafx.mods}/
---add-modules ${java-mod-name},${modules-in-use}
+--module-path ${java.home}/jmods/:${project.build.directory}/modules:${javafx.mods}/:${project.build.directory}/declared-notmodules:${project.build.directory}/declared-modules
+--add-modules ${java-mod-name}
 --module ${java-mod-name}/${main-class}
 --dest ${project.build.directory}
+--app-version ${app.version}

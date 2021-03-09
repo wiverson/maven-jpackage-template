@@ -1,10 +1,16 @@
 --jlink-options "--strip-native-commands --strip-debug --no-header-files --no-man-pages --compress=2"
 --type msi
---name TestApp
+--name ${app.name}
 --win-menu-group Sample
 --icon ${project.basedir}\app-icon.ico
---module-path ${java.home}\jmods\;${project.build.directory}\modules\;${javafx.mods}/
---add-modules ${java-mod-name},${modules-in-use}
+--module-path "${java.home}\\jmods\\";"${project.build.directory}\\modules\\";"${javafx.mods}";"${project.build.directory}\\declared-notmodules";"${project.build.directory}\\declared-modules"
+--add-modules ${java-mod-name}
 --module ${java-mod-name}/${main-class}
 --dest ${project.build.directory}
 --win-menu
+--app-version ${app.version}
+--copyright "Copyright Notice"
+--description "Sample JavaFX Application"
+--temp ${project.build.directory}\installer-work
+--vendor "Vendor Name"
+--win-upgrade-uuid 7b1307f2-2009-45e6-ad0c-a5eb3a8d280f
