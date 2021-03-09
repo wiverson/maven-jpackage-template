@@ -9,8 +9,18 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <!-- This entry point is used by the module system/jlink/jpackage to define the main method for your application -->
         <main-class>com.doublerobot.HelloWorld</main-class>
-        <!-- This should be the . version of the project artifactId -->
+        <!-- These options affect the generated installer -->
+        <app.name>TestApp</app.name>
+        <!-- This converts the build timestamp to a Windows-installer friendly version number. Note that Maven
+         generated timestamp is in UTC, not local time.
+         -->
+        <maven.build.timestamp.format>yy.MM.ddkkmm</maven.build.timestamp.format>
+        <app.version>${maven.build.timestamp}</app.version>
+
+        <!-- This should be the . version of the project artifactId. E.g. if your artifactId is foo-bar this
+        should be set to foo.bar -->
         <java-mod-name>maven.jpackage.template</java-mod-name>
 
         <!-- These version numbers are used in both the macOS and Windows profiles -->
@@ -19,41 +29,41 @@
         <javafx.libs>${project.basedir}/${platform}-javafx/${javafx-libs-version}/lib/</javafx.libs>
         <javafx.mods>${project.basedir}/${platform}-javafx/${javafx-mods-version}/</javafx.mods>
 
-        <!-- These are the modules explicitly used by the project. You may want to add/remove if you
-         are using other modules. -->
-        <modules-in-use>javafx.base,javafx.controls,javafx.graphics,java.logging</modules-in-use>
-
         <!-- Eliminate warnings about UTF-8 in the build -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+
+        <maven.compiler.source>15</maven.compiler.source>
+        <maven.compiler.target>15</maven.compiler.target>
 
         <!-- This project uses the https://github.com/wiverson/jtoolprovider-plugin to invoke jdeps and jpackage -->
         <jtoolprovider.version>1.0.30</jtoolprovider.version>
     </properties>
 
     <dependencies>
-        <!-- This is a library that IS a module -->
+        <!-- This is a library that IS a module, only include to demonstrate it works. -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.6</version>
         </dependency>
-        <!-- Base JavaFX import. This dependency is provided via a module, so we don't want it included in the
-         shaded master jar, but by including it here it it works nicely with IDEs such as IntelliJ. -->
+        <!-- Base JavaFX import. This dependency is provided via a module but by including it here it it works nicely
+         with IDEs such as IntelliJ. -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>15</version>
         </dependency>
         <!-- This dependency is a normal Maven dependency, here mainly as an example. It brings in other transitive
-         dependencies as well. We want to include the contents of this (and all of the other transitive dependencies
-         in our final shaded master jar. This particular dependency generates fake data for testing. -->
+         dependencies as well. -->
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <!-- This is an example of a dependency that (unfortunately) declares itself to be a module, but jdeps
+         unfortunately treats optional module dependencies as required. Below we show how we strip the HikariCP
+         module-info as an example.
+         -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
@@ -64,6 +74,8 @@
     <build>
         <resources>
             <resource>
+                <!-- Here we are processing the platform-specific jpackage command files, adding in Maven
+                 properties for configuration. -->
                 <directory>${project.basedir}/src/packaging</directory>
                 <filtering>true</filtering>
                 <targetPath>${project.build.directory}/packaging</targetPath>
@@ -87,9 +99,9 @@
                     <version>3.1.2</version>
                 </plugin>
                 <plugin>
-                    <groupId>io.github.wiverson</groupId>
-                    <artifactId>jtoolprovider-plugin</artifactId>
-                    <version>${jtoolprovider.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -99,17 +111,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
                 <version>3.0.0-M1</version>
-                <!-- This is an app, so we don't want to install it in the local Maven repository -->
                 <configuration>
+                    <!-- This is an app, so we don't want to install it in the local Maven repository -->
                     <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <release>${maven.compiler.target}</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -125,9 +129,10 @@
                 <!-- https://github.com/wiverson/jtoolprovider-plugin -->
                 <groupId>io.github.wiverson</groupId>
                 <artifactId>jtoolprovider-plugin</artifactId>
-                <version>${jtoolprovider.version}</version>
+                <version>1.0.30</version>
                 <executions>
                     <execution>
+                        <!-- https://github.com/wiverson/jtoolprovider-plugin/blob/main/collect-modules-doc.md -->
                         <id>collect-modules</id>
                         <phase>process-resources</phase>
                         <goals>
@@ -153,6 +158,8 @@
                     file for the entire shaded jar. You'll notice that we are explicitly passing in the JavaFX modules here -
                     you may want to tweak this as you use (or don't use) different modules. The smaller the set of modules,
                     the smaller the final app will be.
+
+                    https://github.com/wiverson/jtoolprovider-plugin/blob/main/java-tool-doc.md
                     -->
                     <execution>
                         <id>jdeps</id>
@@ -166,7 +173,6 @@
                                 <directory>${project.build.directory}/work</directory>
                             </cleanDirectories>
                             <modulePath>${javafx.libs}:${project.build.directory}/dependencies</modulePath>
-                            <!--                            <addModules>javafx.base,javafx.controls,javafx.graphics,java.logging</addModules>-->
                             <generateModuleInfo>${project.build.directory}/work</generateModuleInfo>
                             <args>
                                 <arg>${project.build.directory}/${project.build.finalName}.jar</arg>
@@ -177,6 +183,8 @@
                     are found the /src/packaging directory. These files are copied into the target directory by
                     the Maven resources plugin, which does the filtering to replace the original values with
                     the actual Maven properties.
+
+                    https://github.com/wiverson/jtoolprovider-plugin/blob/main/java-tool-doc.md
                     -->
                     <execution>
                         <id>jpackage</id>
@@ -192,8 +200,7 @@
                 </executions>
             </plugin>
             <plugin>
-                <!-- This plugin compiles and attaches the generated module-info back to the shaded jar -
-                now we have everything we need to start generating an installer! -->
+                <!-- This plugin compiles module-info for the code in this project -->
                 <groupId>org.moditect</groupId>
                 <artifactId>moditect-maven-plugin</artifactId>
                 <version>1.0.0.RC1</version>
@@ -223,6 +230,7 @@
     <profiles>
         <!-- We use the built-in Maven profile activation system to set the platform property.
         These properties are then use to build the directory paths to the platform specific resources.
+        It would be great if Maven automatically added the os family as a property by default
          -->
         <profile>
             <id>unix-active</id>
