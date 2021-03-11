@@ -8,54 +8,46 @@
     <artifactId>maven-jpackage-template</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- This description text is included in the Windows installer by default, see win-jpackage.txt -->
+    <description>Sample JavaFX Application</description>
+
     <properties>
-        <!-- This entry point is used by the module system/jlink/jpackage to define the main method for your application -->
+        <!-- Set this to the class with the main method for your application -->
         <main-class>com.doublerobot.HelloWorld</main-class>
-        <!-- These options affect the generated installer -->
+        <!-- Change your app's name to something interesting... but you might want to avoid spaces
+        just to safe for compatibility across operating systems. -->
         <app.name>TestApp</app.name>
-        <!-- This converts the build timestamp to a Windows-installer friendly version number. Note that Maven
-         generated timestamp is in UTC, not local time.
-         For more information see:
+        <!-- This converts the build timestamp to a Windows-installer friendly version number (minute level resolution).
+        Note that Maven generated timestamp is in UTC, not local time. For more information see:
          https://docs.microsoft.com/en-us/windows/win32/msi/productversion
          https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/text/SimpleDateFormat.html
          -->
         <maven.build.timestamp.format>yy.w.ukkmm</maven.build.timestamp.format>
         <app.version>${maven.build.timestamp}</app.version>
 
-        <!-- This should be the . version of the project artifactId. E.g. if your artifactId is foo-bar this
-        should be set to foo.bar -->
-        <java-mod-name>maven.jpackage.template</java-mod-name>
+        <!-- This property is used to specify the modules included in the (custom) JVM image. -->
+        <!-- Reminder: javafx.web (the embedded browser component) is not included in this project by default due
+        to GitHub template size restrictions. You can download the full SDK from https://openjfx.io -->
+        <jvm.modules>javafx.media,javafx.controls,javafx.fxml,java.logging</jvm.modules>
 
-        <!-- These version numbers are used in both the macOS and Windows profiles -->
-        <javafx-mods-version>javafx-jmods-15.0.1</javafx-mods-version>
-        <javafx-libs-version>javafx-sdk-15.0.1</javafx-libs-version>
-        <javafx.libs>${project.basedir}/${platform}-javafx/${javafx-libs-version}/lib/</javafx.libs>
-        <javafx.mods>${project.basedir}/${platform}-javafx/${javafx-mods-version}/</javafx.mods>
-
-        <!-- Eliminate warnings about UTF-8 in the build -->
+        <!-- Set the project to UTF-8, avoiding warnings in the build logs -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
 
-        <!-- This project uses the https://github.com/wiverson/jtoolprovider-plugin to invoke jdeps and jpackage -->
-        <jtoolprovider.version>1.0.31</jtoolprovider.version>
+        <!-- Used to set both the path to find the JavaFX modules and also the versions for Maven dependencies -->
+        <javafx.version>15.0.1</javafx.version>
+
+        <!-- Replace this UUID with a custom one for your project. This ID is used by the Windows installer system
+        to know that an installer is intended to replace/upgrade an earlier version. The easiest thing to do is
+        grab a unique UUID via https://www.uuidgenerator.net -->
+        <windows.upgrade.uuid>aaaaaaaa-0000-aaaa-aaaa-aaaaaaaaaaaa</windows.upgrade.uuid>
+        <!-- This is used to set many user-visible fields in the Windows Installer. See win-jpackage.txt -->
+        <windows.vendor>Sample</windows.vendor>
     </properties>
 
     <dependencies>
-        <!-- This is a library that IS a module, only include to demonstrate it works. -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.6</version>
-        </dependency>
-        <!-- Base JavaFX import. This dependency is provided via a module but by including it here it it works nicely
-         with IDEs such as IntelliJ. -->
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>15</version>
-        </dependency>
         <!-- This dependency is a normal Maven dependency, here mainly as an example. It brings in other transitive
          dependencies as well. -->
         <dependency>
@@ -63,14 +55,27 @@
             <artifactId>javafaker</artifactId>
             <version>1.0.2</version>
         </dependency>
-        <!-- This is an example of a dependency that (unfortunately) declares itself to be a module, but jdeps
-         unfortunately treats optional module dependencies as required. Below we show how we strip the HikariCP
-         module-info as an example.
-         -->
+
+        <!-- This downloads the platform specific JavaFX libraries used by the project. -->
+        <!-- For the final installable, the JavaFX dependencies are provided via modules, but by including these here
+         they work nicely with with IDEs and other Maven plugins (e.g. the javafx:run). -->
         <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>4.0.3</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${platform}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${platform}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${platform}</classifier>
         </dependency>
     </dependencies>
 
@@ -84,30 +89,6 @@
                 <targetPath>${project.build.directory}/packaging</targetPath>
             </resource>
         </resources>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.9.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>3.1.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.1.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
 
         <plugins>
             <plugin>
@@ -117,6 +98,37 @@
                 <configuration>
                     <!-- This is an app, so we don't want to install it in the local Maven repository -->
                     <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <!-- This copies all of the jar files declared by the Maven build into a single directory.
+                        This makes it easy to assemble the final installer package -->
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!-- The JavaFX libraries are bundled into the custom JVM, so we don't want to duplicate
+                            them in the bundled app and installer. This command skips all of the JavaFX by groupId. -->
+                            <excludeGroupIds>org.openjfx</excludeGroupIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- Put the application jar generated by the project into the dependency folder - the default folder
+                for the maven-dependency-plugin output. -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -132,56 +144,29 @@
                 <!-- https://github.com/wiverson/jtoolprovider-plugin -->
                 <groupId>io.github.wiverson</groupId>
                 <artifactId>jtoolprovider-plugin</artifactId>
-                <version>1.0.30</version>
+                <version>1.0.33</version>
                 <executions>
+                    <!-- This command runs jlink, generating a custom JVM by combining the JavaFX modules bundled in
+                    this project with the JDK modules. -->
                     <execution>
-                        <!-- https://github.com/wiverson/jtoolprovider-plugin/blob/main/collect-modules-doc.md -->
-                        <id>collect-modules</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>collect-modules</goal>
-                        </goals>
-                        <configuration>
-                            <providedModuleDirectories>
-                                <directory>${javafx.mods}</directory>
-                                <directory>${java.home}\jmods\</directory>
-                            </providedModuleDirectories>
-                            <ignoreJars>
-                                <jar>javafx-controls-15.jar</jar>
-                                <jar>javafx-graphics-15.jar</jar>
-                                <jar>javafx-base-15.jar</jar>
-                            </ignoreJars>
-                            <stripJars>
-                                <jar>HikariCP</jar>
-                            </stripJars>
-                        </configuration>
-                    </execution>
-
-                    <!-- We use the jdeps tool here on the exploded directory to automatically generate a module-info.java
-                    file for the entire shaded jar. You'll notice that we are explicitly passing in the JavaFX modules here -
-                    you may want to tweak this as you use (or don't use) different modules. The smaller the set of modules,
-                    the smaller the final app will be.
-
-                    https://github.com/wiverson/jtoolprovider-plugin/blob/main/java-tool-doc.md
-                    -->
-                    <execution>
-                        <id>jdeps</id>
+                        <id>jlink</id>
                         <phase>package</phase>
                         <goals>
                             <goal>java-tool</goal>
                         </goals>
                         <configuration>
-                            <toolName>jdeps</toolName>
-                            <cleanDirectories>
-                                <directory>${project.build.directory}/work</directory>
-                            </cleanDirectories>
-                            <multiRelease>${java.specification.version}</multiRelease>
-                            <modulePath>
-                                ${java.home}/jmods/:${project.build.directory}/modules:${javafx.mods}/:${project.build.directory}/declared-not-modules:${project.build.directory}/declared-modules
+                            <toolName>jlink</toolName>
+                            <cleanDirectories>${project.build.directory}/jvm-image</cleanDirectories>
+                            <modulePath>${project.basedir}/${platform}-javafx/javafx-jmods-${javafx.version}/
                             </modulePath>
-                            <generateModuleInfo>${project.build.directory}/work</generateModuleInfo>
+                            <addModules>${jvm.modules}</addModules>
+                            <output>${project.build.directory}/jvm-image</output>
                             <args>
-                                <arg>${project.build.directory}/${project.build.finalName}.jar</arg>
+                                <arg>--strip-native-commands</arg>
+                                <arg>--no-header-files</arg>
+                                <arg>--strip-debug</arg>
+                                <arg>--no-man-pages</arg>
+                                <arg>--compress=2</arg>
                             </args>
                         </configuration>
                     </execution>
@@ -205,35 +190,77 @@
                     </execution>
                 </executions>
             </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.9.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <reporting>
+        <plugins>
+            <!-- http://mojo.codehaus.org/versions-maven-plugin/version-rules.html -->
+            <!-- This plugin is a utility to find outdated dependencies in your project. Just run mvn site and
+            the resulting HTML reports in target/site will let you know what plugins and dependencies are out of date.
+             -->
             <plugin>
-                <!-- This plugin compiles module-info for the code in this project -->
-                <groupId>org.moditect</groupId>
-                <artifactId>moditect-maven-plugin</artifactId>
-                <version>1.0.0.RC1</version>
-                <executions>
-                    <execution>
-                        <id>add-module-infos</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>add-module-info</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/modules</outputDirectory>
-                            <overwriteExistingFiles>true</overwriteExistingFiles>
-                            <modules>
-                                <module>
-                                    <file>${project.build.directory}/${project.build.finalName}.jar</file>
-                                    <moduleInfoFile>
-                                        ${project.build.directory}/work/${java-mod-name}/versions/${java.specification.version}/module-info.java
-                                    </moduleInfoFile>
-                                </module>
-                            </modules>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.8.1</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependency-updates-report</report>
+                            <report>plugin-updates-report</report>
+                            <report>property-updates-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <processDependencyManagementTransitive>false</processDependencyManagementTransitive>
+                </configuration>
             </plugin>
         </plugins>
-    </build>
+    </reporting>
     <profiles>
         <!-- We use the built-in Maven profile activation system to set the platform property.
         These properties are then use to build the directory paths to the platform specific resources.
@@ -247,7 +274,7 @@
                 </os>
             </activation>
             <properties>
-                <platform>unix</platform>
+                <platform>linux</platform>
             </properties>
         </profile>
         <profile>
@@ -258,7 +285,7 @@
                 </os>
             </activation>
             <properties>
-                <platform>windows</platform>
+                <platform>win</platform>
             </properties>
         </profile>
         <profile>
@@ -273,4 +300,7 @@
             </properties>
         </profile>
     </profiles>
+    <!-- This entire section is really just Maven bookkeeping, ensuring that the build is using the more
+        recent version of many of these plugins -->
+
 </project>
