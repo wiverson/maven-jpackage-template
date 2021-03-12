@@ -144,7 +144,7 @@
                 <!-- https://github.com/wiverson/jtoolprovider-plugin -->
                 <groupId>io.github.wiverson</groupId>
                 <artifactId>jtoolprovider-plugin</artifactId>
-                <version>1.0.33</version>
+                <version>1.0.34</version>
                 <executions>
                     <!-- This command runs jlink, generating a custom JVM by combining the JavaFX modules bundled in
                     this project with the JDK modules. -->
@@ -156,7 +156,7 @@
                         </goals>
                         <configuration>
                             <toolName>jlink</toolName>
-                            <cleanDirectories>${project.build.directory}/jvm-image</cleanDirectories>
+                            <removeDirectories>${project.build.directory}/jvm-image/</removeDirectories>
                             <modulePath>${project.basedir}/${platform}-javafx/javafx-jmods-${javafx.version}/
                             </modulePath>
                             <addModules>${jvm.modules}</addModules>
@@ -185,6 +185,7 @@
                         </goals>
                         <configuration>
                             <toolName>jpackage</toolName>
+                            <removeDirectories>${project.build.directory}/installer-work</removeDirectories>
                             <args>@${project.build.directory}/packaging/${platform}-jpackage.txt</args>
                         </configuration>
                     </execution>
