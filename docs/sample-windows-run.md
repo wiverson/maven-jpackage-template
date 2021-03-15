@@ -12,7 +12,7 @@ Here is a sample execution of `mvn clean install`
 ``` 
 [INFO] Scanning for projects...
 [INFO] 
-[INFO] --------------< com.doublerobot:maven-jpackage-template >---------------
+[INFO] --------------< com.changenode:maven-jpackage-template >---------------
 [INFO] Building maven-jpackage-template 1.0-SNAPSHOT
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 

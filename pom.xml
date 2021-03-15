@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.doublerobot</groupId>
+    <groupId>com.changenode</groupId>
     <artifactId>maven-jpackage-template</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -13,7 +13,7 @@
 
     <properties>
         <!-- Set this to the class with the main method for your application -->
-        <main-class>com.doublerobot.HelloWorld</main-class>
+        <main-class>com.changenode.BaseApplication</main-class>
         <!-- Change your app's name to something interesting... but you might want to avoid spaces
         just to safe for compatibility across operating systems. -->
         <app.name>TestApp</app.name>
