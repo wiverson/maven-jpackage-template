@@ -311,6 +311,7 @@
                         <configuration>
                             <executable>cscript</executable>
                             <useMavenLogger>true</useMavenLogger>
+                            <workingDirectory>${project.build.directory}</workingDirectory>
                             <arguments>
                                 <argument>${project.build.directory}/packaging/add-launch-to-msi.js</argument>
                             </arguments>
