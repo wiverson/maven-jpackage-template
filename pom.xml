@@ -303,6 +303,7 @@
                         <executions>
                             <execution>
                                 <phase>install</phase>
+                                <id>add-launch-to-msi</id>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
