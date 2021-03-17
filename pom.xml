@@ -310,8 +310,7 @@
                         </executions>
                         <configuration>
                             <executable>cscript</executable>
-                            <useMavenLogger>true</useMavenLogger>
-                            <quietLogs>true</quietLogs>
+                            <outputFile>${project.build.directory}/msi-result.log</outputFile>
                             <workingDirectory>${project.build.directory}</workingDirectory>
                             <arguments>
                                 <argument>${project.build.directory}/packaging/add-launch-to-msi.js</argument>
