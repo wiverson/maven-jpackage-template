@@ -88,6 +88,10 @@
                 <filtering>true</filtering>
                 <targetPath>${project.build.directory}/packaging</targetPath>
             </resource>
+            <!-- Add the default resource path back in - by overriding above it disables the default -->
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
         </resources>
 
         <plugins>

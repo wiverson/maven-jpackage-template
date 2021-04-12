@@ -1,0 +1,1 @@
+A simple hello file that is copied into the application.
