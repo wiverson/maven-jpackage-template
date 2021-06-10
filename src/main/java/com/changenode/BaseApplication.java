@@ -96,5 +96,10 @@ public class BaseApplication extends Application implements Log {
         statusLabel.setText("Ready.");
 
         stage.show();
+        //put window to front to avoid it to be hide behind other.
+        stage.setAlwaysOnTop(true);
+        stage.requestFocus();
+        stage.toFront();
+        stage.setAlwaysOnTop(false);
     }
 }
