@@ -22,7 +22,7 @@
          https://docs.microsoft.com/en-us/windows/win32/msi/productversion
          https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/text/SimpleDateFormat.html
          -->
-        <maven.build.timestamp.format>yy.ww.Wkkmm</maven.build.timestamp.format>
+        <maven.build.timestamp.format>yy.ww.WWkkmm</maven.build.timestamp.format>
         <app.version>${maven.build.timestamp}</app.version>
 
         <!-- This property is used to specify the modules included in the (custom) JVM image. -->
