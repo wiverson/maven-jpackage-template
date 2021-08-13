@@ -1,9 +1,7 @@
-# JavaFX + Maven = Native Desktop Apps
+# JavaFX + Maven + GitHub Actions = Native Desktop Apps
 
 [JavaFX](https://openjfx.io) + [jpackage](https://docs.oracle.com/en/java/javase/15/docs/specs/man/jpackage.html) +
 [Maven](http://maven.apache.org) template project for generating native desktop applications.
-
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/maven-jpackage-template/community)
 
 # Goal
 
@@ -14,7 +12,7 @@
     - Use standard Maven dependency system to manage dependencies
 3. Generate [macOS (.dmg), Windows (.msi) and Unix (e.g. deb/rpm)](https://github.com/wiverson/maven-jpackage-template/releases)
 installers/packages automatically
-with [GitHub Actions](https://github.com/wiverson/maven-jpackage-template/tree/main/.github/workflows)
+with [GitHub Actions](https://github.com/wiverson/maven-jpackage-template/tree/main/.github/workflows).
 
 ## Overview
 
@@ -50,6 +48,8 @@ Here are few cool things in this template:
     - Change the Dock icon dynamically on macOS
     - Menu on the top for macOS, in the window itself on Windows
     - Request user attention (bouncing dock icon) on macOS
+- Java + Java modules are used to build a trimmed JVM ([a few thoughts on Java modules](https://changenode.com/articles/fomo-java-modules))
+- The user application uses ordinary Maven dependencies and classpath to run the application
 
 Once you get started, you might find these lists of tutorials, tools, libraries for
 [JavaFX](https://gist.github.com/wiverson/6c7f49819016cece906f0e8cea195ea2)
@@ -87,11 +87,55 @@ To do everything up until the actual installer generation (including generating 
 Because these builds use stripped down JVM images, the
 [generated installers are in the 30-40mb range](https://github.com/wiverson/maven-jpackage-template/releases).
 
-# Sponsor
+# Debugging
 
-This project is sponsored by [ChangeNode.com](https://changenode.com/) - if you would like to add easy automatic
-updates, crash reporting, analytics, etc. to your Java/JavaFX desktop application, go check it out... and be sure to
-subscribe for more information about desktop Java development.
+1. If the built app fails to run, make sure the JavaFX app runs as expected first by using the `mvn javafx:run` command.
+   This will run the app in development mode locally, and you should see standard System.out debug lines appear in your
+   console.
+    - Many flavors of Linux fail to run here for a variety of reasons. Head over to
+      the [discussions](https://github.com/wiverson/maven-jpackage-template/discussions) or perhaps consider your
+      [consulting budget](https://changenode.com) or
+      a [JavaFX support contract from Gluon](https://gluonhq.com/services/javafx-support/).
+2. Check the Maven build logs (of course).
+3. By default, the app will generate debug*****.log files containing the output from System.out. You can look at the
+   main method of `BaseApplication.java` to see how this is done. For a production app, you would want to place these
+   logs in the correct OS specific location. On a Unix machine you can `tail -f` the log normally.
+
+# OS-Specific Notes
+
+## Linux
+
+There are a LOT of different flavors of Linux out there. I've provided the Linux build more as an example of how the
+GitHub Action works, but I can't diagnose or trouble-shoot your Linux build (unless it's a consulting engagement). Feel
+free to post these in [discussions](https://github.com/wiverson/maven-jpackage-template/discussions)!
+
+I will note, however, that much of the Linux trouble I have seen comes from some of the included integration
+demonstrations. Try commenting out the loading of demo plugins in `BaseApplication.java` - specifically the loop that
+loads the plugins.
+
+In theory, the Exception handler in the plugin loader code should catch the exceptions. In practice, on a few flavors of
+Linux something dies with a native exception that takes it all down.
+
+## M1 Macs & ARM Linux
+
+Here is the checklist for M1 support for this template:
+
+1. Installing JDK 17
+    - Currently EA
+2. Installing the matching JavaFX 17 jmods
+    - Currently EA
+3. Configuring the build to detect the correct OS + architecture mix.
+    - Instead of Maven detect "mac" or "linux" the Maven builds now need to be architecture aware.
+    - Probably fine for a local M1 build
+4. Configuring GitHub Actions to run the build
+    - [Not yet available](https://github.com/actions/virtual-environments/issues/2187)
+
+Oh, and I currently don't have an M1 Mac (waiting for the 15" MBP, ahem). Once I get that machine I'll likely start with
+a Java 17 + JavaFX 17 branch.
+
+That said, there is no reason not to try it all out locally if you have an M1 Mac (or ARM Linux)!
+Feel free to post to the [discussion board](https://github.com/wiverson/maven-jpackage-template/discussions) if you are
+working on either of these.
 
 # Help
 
@@ -99,14 +143,14 @@ Problems? Make sure everything is installed and working right!
 
 - Compiler not recognizing the --release option? Probably on an old JDK.
 - Can't find jdeps? Probably on an old JDK.
-- Can't find jpackage? Probably haven't set up your system
+- Can't find jpackage on Java 15? Probably haven't set up your system
   to [allow Java 15 to enable preview packages]((docs/java-15-jpackage.md)).
 - Unrecognized option: --add-modules jdk.incubator.jpackage
     - Could be a left-over MAVEN_OPTS setting when you switched from Java 15 to Java 16
     - If you are still on Java 15, you may not have
       [MAVEN_OPTS set correctly](https://github.com/wiverson/maven-jpackage-template/issues/2).
 
-If you need consulting support, feel free to reach out to [ChangeNode.com](https://changenode.com/).
+If you need consulting support, feel free to reach out at [ChangeNode.com](https://changenode.com/).
 
 # Q&A
 
