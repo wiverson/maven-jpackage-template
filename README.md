@@ -116,6 +116,11 @@ loads the plugins.
 In theory, the Exception handler in the plugin loader code should catch the exceptions. In practice, on a few flavors of
 Linux something dies with a native exception that takes it all down.
 
+I get more support/issues for Linux builds than anything else, often for distros I've never heard of... which is cool
+but not something I'm really set up to deal with (short of paid consulting). That said, every Linux support issue so
+far has been resolved pretty easily by folks posting Maven or application log files in
+the [discussion group](https://github.com/wiverson/maven-jpackage-template/discussions). No promises, but go forth and post!
+
 ## M1 Macs & ARM Linux
 
 Here is the checklist for M1 support for this template:
