@@ -5,7 +5,7 @@
 
 # Goal
 
-1. Build nice, small cross-platform [JavaFX](https://openjfx.io) or Swing desktop apps with native installers
+1. Build nice, small cross-platform JavaFX or Swing desktop apps with native installers
 	- Apx 30-40mb .dmg, .msi and .deb installers - check out the example builds in
 	  [releases](https://github.com/wiverson/maven-jpackage-template/releases).
 2. Just use Maven - no shell scripts required.
