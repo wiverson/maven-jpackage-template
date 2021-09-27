@@ -1,7 +1,7 @@
 --type msi
 --name ${app.name}
 --win-menu
---win-menu-group ${vendor}
+--win-menu-group ${windows.vendor}
 --vendor ${windows.vendor}
 --icon ${project.basedir}\app-icon.ico
 --dest ${project.build.directory}
