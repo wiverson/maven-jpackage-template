@@ -8,7 +8,7 @@
     <artifactId>maven-jpackage-template</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <!-- This description text is included in the Windows installer by default, see win-jpackage.txt -->
+    <!-- This description text is included in the Windows installer by default, see windows-jpackage.txt -->
     <description>Sample JavaFX Application</description>
 
     <properties>
@@ -33,17 +33,17 @@
         <!-- Set the project to UTF-8, avoiding warnings in the build logs -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
         <!-- Used to set both the path to find the JavaFX modules and also the versions for Maven dependencies -->
-        <javafx.version>16</javafx.version>
+        <javafx.version>17.0.1</javafx.version>
 
         <!-- Replace this UUID with a custom one for your project. This ID is used by the Windows installer system
         to know that an installer is intended to replace/upgrade an earlier version. The easiest thing to do is
         grab a unique UUID via https://www.uuidgenerator.net -->
         <windows.upgrade.uuid>aaaaaaaa-0000-aaaa-aaaa-aaaaaaaaaaaa</windows.upgrade.uuid>
-        <!-- This is used to set many user-visible fields in the Windows Installer. See win-jpackage.txt -->
+        <!-- This is used to set many user-visible fields in the Windows Installer. See windows-jpackage.txt -->
         <windows.vendor>Sample</windows.vendor>
     </properties>
 
@@ -63,23 +63,29 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
-            <classifier>${platform}</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
             <version>${javafx.version}</version>
-            <classifier>${platform}</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
-            <classifier>${platform}</classifier>
         </dependency>
     </dependencies>
 
     <build>
+        <extensions>
+            <!-- Used to inject the OS and architecture values in a consistent manner -->
+            <!-- https://github.com/trustin/os-maven-plugin -->
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.0</version>
+            </extension>
+        </extensions>
         <resources>
             <resource>
                 <!-- Here we are processing the platform-specific jpackage command files, adding in Maven
@@ -136,7 +142,7 @@
                 <!-- Plugin to make working with JavaFX nicer. See https://github.com/openjfx/javafx-maven-plugin -->
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.5</version>
+                <version>0.0.8</version>
                 <configuration>
                     <mainClass>${main-class}</mainClass>
                 </configuration>
@@ -158,7 +164,8 @@
                         <configuration>
                             <toolName>jlink</toolName>
                             <removeDirectories>${project.build.directory}/jvm-image/</removeDirectories>
-                            <modulePath>${project.basedir}/${platform}-javafx/javafx-jmods-${javafx.version}/
+                            <modulePath>
+                                ${project.basedir}/javafx-${os.detected.classifier}/javafx-jmods-${javafx.version}/
                             </modulePath>
                             <addModules>${jvm.modules}</addModules>
                             <output>${project.build.directory}/jvm-image</output>
@@ -186,11 +193,22 @@
                         </goals>
                         <configuration>
                             <toolName>jpackage</toolName>
+                            <writeOutputToLog>true</writeOutputToLog>
+                            <writeErrorsToLog>true</writeErrorsToLog>
+                            <failOnError>true</failOnError>
                             <removeDirectories>${project.build.directory}/installer-work</removeDirectories>
-                            <args>@${project.build.directory}/packaging/${platform}-jpackage.txt</args>
+                            <args>@${project.build.directory}/packaging/${os.detected.name}-jpackage.txt</args>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
             </plugin>
         </plugins>
         <pluginManagement>
@@ -274,17 +292,7 @@
         These properties are then use to build the directory paths to the platform specific resources.
         It would be great if Maven automatically added the os family as a property by default
          -->
-        <profile>
-            <id>unix-active</id>
-            <activation>
-                <os>
-                    <family>unix</family>
-                </os>
-            </activation>
-            <properties>
-                <platform>linux</platform>
-            </properties>
-        </profile>
+
         <profile>
             <id>windows-active</id>
             <activation>
@@ -292,9 +300,6 @@
                     <family>windows</family>
                 </os>
             </activation>
-            <properties>
-                <platform>win</platform>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -324,17 +329,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>mac-active</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                </os>
-            </activation>
-            <properties>
-                <platform>mac</platform>
-            </properties>
         </profile>
     </profiles>
 </project>
