@@ -6,8 +6,12 @@
 # Goal
 
 1. Build nice, small cross-platform JavaFX or Swing desktop apps with native installers
-	- Apx 30-40mb .dmg, .msi and .deb installers - check out the example builds in
-	  [releases](https://github.com/wiverson/maven-jpackage-template/releases).
+    - Apx 30-40mb .dmg, .msi and .deb installers - check out the example builds in
+      [releases](https://github.com/wiverson/maven-jpackage-template/releases).
+    - Note that the macOS builds are not signed, and therefore macOS will report as
+      damaged/unopenable. There 
+      are [a few ways to deal with this](https://github.com/wiverson/maven-jpackage-template/issues/49), 
+      depending on your situation.
 2. Just use Maven - no shell scripts required.
 	- Use standard Maven dependency system to manage dependencies
 3. Generate [macOS (.dmg), Windows (.msi) and Unix (e.g. deb/rpm)](https://github.com/wiverson/maven-jpackage-template/releases)
@@ -21,7 +25,7 @@ installer package for a JavaFX application. It can easily be adapted to work wit
 
 ### Requirements
 
-- [Java 16](https://adoptopenjdk.net/) and [Maven](https://maven.apache.org/).
+- [Java 17](https://adoptium.net/?variant=openjdk17) and [Maven](https://maven.apache.org/).
 - On macOS XCode is required.
 - On Windows the free [WiX Toolset](https://wixtoolset.org/) is required.
 
@@ -30,7 +34,7 @@ which automatically generate macOS, Windows, and Linux installers.
 
 The generated installers come in at around 30-40mb. The example source in the project includes demonstrations of several
 native desktop features - for example, drag-and-drop from the Finder/Explorer, as well as a few macOS Dock integration
-examples. Removing the code and the demonstration dependendencies gets a "Hello World" build size closer to 30mb than
+examples. Removing the code and the demonstration dependencies gets a "Hello World" build size closer to 30mb than
 40mb.
 
 ## Key Features
@@ -57,6 +61,18 @@ Once you get started, you might find these lists of tutorials, tools, libraries 
 [JavaFX](https://gist.github.com/wiverson/6c7f49819016cece906f0e8cea195ea2)
 and general [Java desktop integration](https://gist.github.com/wiverson/e9dfd73ca9a9a222b2d0a3d68ae3f129) helpful.
 
+### Does this work with Apple Silicon aka M1?
+
+Yes, although as of this writing I don't believe there are GitHub Action runners that support M1. But building locally
+on my M1 laptop works great and generates native M1 builds.
+
+### What about Linux?
+
+The JavaFX builds include several other architectures, including aarch64 and arm32. In theory,
+you should be able to add those just like the other builds. Haven't tested it though.
+Feel free to post in the [discussion](https://github.com/wiverson/maven-jpackage-template/discussions) section if you 
+are using Linux.
+
 ### Can I Use this with Swing instead of JavaFX?
 
 tl;dr absolutely.
@@ -75,9 +91,10 @@ than JavaFX.
 In particular, delete the following directories:
 
 ```
-/linux-javafx
-/mac-javafx
-/win-javafx
+/javafx-linux-x64_64
+/javafx-osx-x86_64
+/javafx-os-aarch_64
+/javafx-windows-x86_64
 ```
 
 Changes to the pom.xml:
@@ -88,7 +105,6 @@ Changes to the pom.xml:
 4. Remove the configuration/excludeGroupIds section from the maven-dependency-plugin
 5. Remove javafx-maven-plugin from the plugins list
 6. Remove the modulePath delcaration from the jtoolprovider-plugin execution/configuration
-
 
 # Usage
 
@@ -104,8 +120,8 @@ To do everything up until the actual installer generation (including generating 
 
 # Installation
 
-1. Install [OpenJDK Java 16](https://adoptopenjdk.net/) or
-   [Oracle Java 16](https://www.oracle.com/java/technologies/javase-downloads.html).
+1. Install [OpenJDK Java 17](https://adoptium.net/?variant=openjdk17) or
+   [Oracle Java 17](https://www.oracle.com/java/technologies/javase-downloads.html).
 	- Verify by opening a fresh Terminal/Command Prompt and typing `java --version`.
 2. Install [Apache Maven 3.6.3](http://maven.apache.org/install.html) or later and make sure it's on your path.
 	- Verify this by opening a fresh Terminal/Command Prompt and typing `mvn --version`.
@@ -121,6 +137,9 @@ To do everything up until the actual installer generation (including generating 
 
 Because these builds use stripped down JVM images, the
 [generated installers are in the 30-40mb range](https://github.com/wiverson/maven-jpackage-template/releases).
+
+On macOS you should [add signing to avoid error messages](https://github.com/wiverson/maven-jpackage-template/issues/49)
+related to the security system(s).
 
 # Debugging
 
@@ -140,7 +159,7 @@ Because these builds use stripped down JVM images, the
 
 ## Linux
 
-There are a LOT of different flavors of Linux out there. I've provided the Linux build more as an example of how the
+There are a LOT of different flavors of Linux out there. I've provided the Ubuntu build more as an example of how the
 GitHub Action works, but I can't diagnose or trouble-shoot your Linux build (unless it's a consulting engagement). Feel
 free to post these in [discussions](https://github.com/wiverson/maven-jpackage-template/discussions)!
 
@@ -156,32 +175,6 @@ but not something I'm really set up to deal with (short of paid consulting). Tha
 far has been resolved pretty easily by folks posting Maven or application log files in
 the [discussion group](https://github.com/wiverson/maven-jpackage-template/discussions). No promises, but go forth and post!
 
-## M1 Macs & ARM Linux
-
-Here is the checklist for M1 support for this template:
-
-1. Installing JDK 17
-	- Currently EA
-2. Installing the matching JavaFX 17 jmods
-	- Currently EA
-3. Configuring the build to detect the correct OS + architecture mix.
-	- Instead of Maven detect "mac" or "linux" the Maven builds now need to be architecture aware.
-	- Probably fine for a local M1 build
-4. Configuring GitHub Actions to run the build
-	- [Not yet available](https://github.com/actions/virtual-environments/issues/2187)
-
-Oh, and I currently don't have an M1 Mac (waiting for the 15" MBP, ahem). Once I get that machine I'll likely start with
-a Java 17 + JavaFX 17 branch.
-
-That said, there is no reason not to try it all out locally if you have an M1 Mac (or ARM Linux)!
-Feel free to post to the [discussion board](https://github.com/wiverson/maven-jpackage-template/discussions) if you are
-working on either of these.
-
-## Java 15
-
-[Java 15 will work](docs/java-15-jpackage.md), although it requires a bit of setup. Honestly I can't think of a single
-reason someone would stick with Java 15 instead of 16 (or 17), so I'll likely delete this soon.
-
 # Help
 
 Problems? Make sure everything is installed and working right!
@@ -191,7 +184,7 @@ Problems? Make sure everything is installed and working right!
 - Can't find jpackage on Java 15? Probably haven't set up your system
   to [allow Java 15 to enable preview packages]((docs/java-15-jpackage.md)).
 - Unrecognized option: --add-modules jdk.incubator.jpackage
-	- Could be a left-over MAVEN_OPTS setting when you switched from Java 15 to Java 16
+	- Could be a left-over MAVEN_OPTS setting when you switched from Java 15 to Java 16/17
 	- If you are still on Java 15, you may not have
 	  [MAVEN_OPTS set correctly](https://github.com/wiverson/maven-jpackage-template/issues/2).
 
