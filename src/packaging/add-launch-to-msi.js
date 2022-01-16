@@ -5,12 +5,7 @@ var database = installer.OpenDatabase("${app.name}-${app.version}.msi", 1);
 var sql
 var view
 
-sql = "SELECT File from File where FileName='${app.name}.exe'";
-view = database.OpenView(sql);
-view.Execute();
-var file = view.Fetch().StringData(1)
-WScript.StdErr.WriteLine(file);
-view.Close();
+var file = FindFileIdentifier(database, "${app.name}.exe");
 
 try {
     sql = "INSERT INTO `CustomAction` (`Action`,`Type`,`Source`) VALUES ('ExecuteAfterFinalize','2258','" + file + "')"
