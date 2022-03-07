@@ -45,6 +45,11 @@
         <windows.upgrade.uuid>aaaaaaaa-0000-aaaa-aaaa-aaaaaaaaaaaa</windows.upgrade.uuid>
         <!-- This is used to set many user-visible fields in the Windows Installer. See windows-jpackage.txt -->
         <windows.vendor>Sample</windows.vendor>
+
+        <!-- Empty properties to skip signing by default. Set with the macos-sign Maven profile -->
+        <macos.sign></macos.sign>
+        <macos.sign.identity></macos.sign.identity>
+
     </properties>
 
     <dependencies>
