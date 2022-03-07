@@ -50,7 +50,7 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k temppass build.keychain
           export IDENTITY=$(security find-identity -v)
           echo $(security find-identity -v)
-          mvn -B clean install --file -Pmacos-sign pom.xml
+          mvn -B clean install  -Pmacos-sign --file pom.xml
       - name: "Codesign DMG"
         env:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
