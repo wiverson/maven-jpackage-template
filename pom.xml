@@ -294,6 +294,18 @@
          -->
 
         <profile>
+            <id>macos-sign</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <macos.sign>--mac-sign</macos.sign>
+                <!-- You will have to replace this with your own dev information from your Apple identity -->
+                <macos.sign.identity>--mac-signing-key-user-name "Company Name, Inc. (BXPXTXC35S)"</macos.sign.identity>
+            </properties>
+        </profile>
+
+        <profile>
             <id>windows-active</id>
             <activation>
                 <os>

@@ -66,6 +66,20 @@ and general [Java desktop integration](https://gist.github.com/wiverson/e9dfd73c
 Yes, although as of this writing I don't believe there are GitHub Action runners that support M1. But building locally
 on my M1 laptop works great and generates native M1 builds.
 
+### I downloaded the macOS release and it won't open - the Finder says it's damaged!
+
+Yup, it's quarantined because it's not signed. You can override the quarantine via
+a command-line option. See the next Q on macOS signing, notarization, and stapling.
+
+### Does this support macOS signing, notarization, and stapling?
+
+Yes, there is a GitHub Action and a Maven profile to assist with setting all of this up
+for macOS applications.
+
+For more information, see the [documentation on getting macOS signing/notarization/stapling](/docs/apple-sign-notarize.md) set 
+up. It won't work out of the box, as you need to sign up for an Apple Developer account,
+add a bunch of GitHub Secrets and update the pom.xml.
+
 ### What about Linux?
 
 The JavaFX builds include several other architectures, including aarch64 and arm32. In theory,
