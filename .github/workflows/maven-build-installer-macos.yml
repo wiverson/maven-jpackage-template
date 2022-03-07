@@ -4,10 +4,19 @@
 name: Build macOS Installer
 
 on:
-  push:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
+  workflow_dispatch:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+
+# Note that the builds produced by this build WILL NOT RUN on macOS Monterey!
+# They will be flagged as unsigned and quarantined. You can run a command-line
+# to un-quarantine them, but obviously that's not practical for end-users.
+# Instead, you will need to set up the signing and notarization to get this to work
+# seamlessly for users. See the notes on signing linked to in the README.md
+# in the root of this directory.
 
 jobs:
   build:
