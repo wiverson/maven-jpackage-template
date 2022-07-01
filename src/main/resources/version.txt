@@ -1,0 +1,6 @@
+${maven.build.timestamp}
+${env.GITHUB_RUN_NUMBER}
+${env.GITHUB_RUN_ID}
+${env.GITHUB_RUN_ATTEMPT}
+${env.GITHUB_WORKFLOW}
+${env.RUNNER_ARCH}

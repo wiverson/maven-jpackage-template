@@ -61,6 +61,19 @@ Once you get started, you might find these lists of tutorials, tools, libraries 
 [JavaFX](https://gist.github.com/wiverson/6c7f49819016cece906f0e8cea195ea2)
 and general [Java desktop integration](https://gist.github.com/wiverson/e9dfd73ca9a9a222b2d0a3d68ae3f129) helpful.
 
+### Version Numbering
+
+Usually you want a "marketing version" of an app as released to customers, and a "developer version" for use in internal
+testing. For example, to the end user it's just "Windows 11" but there are countless build numbers for all the
+different versions of Windows 11.
+
+The end-user value is set in the pom.xml as `app.version`. This value is updated to use a GitHub environment variable
+when the installers are run on GitHub.
+
+If you look in the `src/main/resources` you will see a version.txt file. This file has information in it that will
+be useful for creating a developer build UI. You might want to convert this to a properties file or a JSON file and
+display the information in your about UI.
+
 ### Does this work with Apple Silicon aka M1?
 
 Yes, although as of this writing I don't believe there are GitHub Action runners that support M1. But building locally

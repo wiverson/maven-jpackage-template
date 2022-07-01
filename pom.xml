@@ -22,8 +22,8 @@
          https://docs.microsoft.com/en-us/windows/win32/msi/productversion
          https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/text/SimpleDateFormat.html
          -->
-        <maven.build.timestamp.format>yy.ww.WWkkmm</maven.build.timestamp.format>
-        <app.version>${maven.build.timestamp}</app.version>
+
+        <app.version>1.0.0</app.version>
 
         <!-- This property is used to specify the modules included in the (custom) JVM image. -->
         <!-- Reminder: javafx.web (the embedded browser component) is not included in this project by default due
@@ -101,6 +101,7 @@
             </resource>
             <!-- Add the default resource path back in - by overriding above it disables the default -->
             <resource>
+                <filtering>true</filtering>
                 <directory>${project.basedir}/src/main/resources</directory>
             </resource>
         </resources>
@@ -241,12 +242,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.2.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -257,7 +258,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.9.1</version>
+                    <version>3.10.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -293,6 +294,19 @@
         </plugins>
     </reporting>
     <profiles>
+        <profile>
+            <id>github-action</id>
+            <activation>
+                <property>
+                    <name>env.GITHUB_RUN_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <!--suppress UnresolvedMavenProperty -->
+                <app.version>1.${env.GITHUB_RUN_NUMBER}.${env.GITHUB_RUN_ATTEMPT}</app.version>
+            </properties>
+        </profile>
+
         <!-- We use the built-in Maven profile activation system to set the platform property.
         These properties are then use to build the directory paths to the platform specific resources.
         It would be great if Maven automatically added the os family as a property by default
