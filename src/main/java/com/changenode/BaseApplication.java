@@ -30,8 +30,7 @@ public class BaseApplication extends Application implements Log {
 
     public static void main(String[] args) {
         /*
-         * This little bit of code causes this application to route the debugging output for this application to a
-         * log file in your "default" directory.
+         * Route the debugging output for this application to a log file in your "default" directory.
          * */
         try {
             outputFile = File.createTempFile("debug", ".log", getFileSystemView().getDefaultDirectory());

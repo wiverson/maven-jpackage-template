@@ -198,6 +198,9 @@ Problems? Make sure everything is installed and working right!
     - Could be a left-over MAVEN_OPTS setting when you switched from Java 15 to Java 16/17
     - If you are still on Java 15, you may not have
       [MAVEN_OPTS set correctly](https://github.com/wiverson/maven-jpackage-template/issues/2).
+- Getting errors about not being able to find JavaFX classes in your IDE? Make 
+sure your IDE is pointing to the right JDK. For example, macOS IntelliJ -> select 
+File, Project Structure and make sure you have Liberica with JavaFX selected.
 
 If you need consulting support, feel free to reach out at [ChangeNode.com](https://changenode.com/). I've helped several
 companies with Swing and JavaFX clean up/modernize their old apps to include updated look & feels, add macOS 
