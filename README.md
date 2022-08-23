@@ -47,7 +47,7 @@ SDKMAN! is installed, you can run the following to install Liberica or Azul Zulu
 ```bash
 sdk install java 18.0.2.fx-librca
 # or
-skd install java 18.0.2.fx-zulu
+sdk install java 18.0.2.fx-zulu
 sdk current java
 sdk install maven
 ```
