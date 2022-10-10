@@ -1,0 +1,103 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Build All Installers
+
+on:
+  #  push:
+  #    branches: [ main ]
+  #  pull_request:
+  #    branches: [ main ]
+  workflow_dispatch:
+    branches: [ main ]
+
+env:
+  DEV_IDENTITY: BXPZTQZ35S # Your Apple Dev identity, something like BXPZTQZ35S
+  PRIMARY_BUNDLE_ID: com.example.App # Unique to your app, often the launcher class
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Download Wix
+        uses: i3h/download-release-asset@v1
+        if: matrix.os == 'windows-latest'
+        with:
+          owner: wixtoolset
+          repo: wix3
+          tag: wix3112rtm
+          file: wix311-binaries.zip
+      - name: Decompress Wix
+        uses: DuckSoft/extract-7z-action@v1.0
+        if: matrix.os == 'windows-latest'
+        with:
+          pathSource: wix311-binaries.zip
+          pathTarget: ./target/wix
+      - name: Add Wix to Path
+        run: echo "$HOME/target/wix" >> $GITHUB_PATH
+        if: matrix.os == 'windows-latest'
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: 18.0.2
+          distribution: 'liberica'
+          java-package: jdk+fx
+          cache: 'maven'
+      - name: "Build with Maven"
+        if: matrix.os != 'macos-latest'
+        run: mvn -B clean install --file pom.xml
+      - name: "Build with Maven (macOS No Signing)"
+        if: ${{ secrets.MACOS_CERTIFICATE == null }} && matrix.os == 'macos-latest'
+        run: mvn -B clean install --file pom.xml
+      - name: "Build with Maven (macOS Signed)"
+        if: ${{ secrets.MACOS_CERTIFICATE != null }} && matrix.os == 'macos-latest'
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        run: |
+          echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
+          security create-keychain -p temppass build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p temppass build.keychain
+          security import certificate.p12 -k build.keychain -P $MACOS_CERTIFICATE_PWD -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k temppass build.keychain
+          export IDENTITY=$(security find-identity -v)
+          echo $(security find-identity -v)
+          mvn -B clean install  -Pmacos-sign --file pom.xml
+      - name: "Codesign DMG"
+        if: matrix.os == 'macos-latest' && ${{ secrets.MACOS_CERTIFICATE != null }}
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        run: |
+          export DMG_PATH=$(ls ./target/*.dmg)
+          /usr/bin/codesign --deep --force -s ${{ env.DEV_IDENTITY}} $DMG_PATH -v
+          echo DMG_PATH=$DMG_PATH >> $GITHUB_ENV
+          echo ${{ env.DMG_PATH }}
+      - name: "Notarize DMG"
+        if: matrix.os == 'macos-latest' && ${{ secrets.APP_PASS != null }}
+        uses: devbotsxyz/xcode-notarize@v1
+        with:
+          product-path: ${{ env.DMG_PATH }}
+          primary-bundle-id: ${{ env.PRIMARY_BUNDLE_ID }}
+          appstore-connect-username: ${{ secrets.APP_EMAIL }}
+          appstore-connect-password: ${{ secrets.APP_PASS }}
+      - name: "Staple DMG"
+        if: matrix.os == 'macos-latest' && ${{ secrets.APP_PASS != null }}
+        uses: devbotsxyz/xcode-staple@v1
+        with:
+          product-path: ${{ env.DMG_PATH }}
+      - name: Update Automatic Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN}}"
+          automatic_release_tag: ${{ matrix.os }}
+          prerelease: true
+          title: ${{ matrix.os }} Development Build
+          files: | 
+            ${{ env.DMG_PATH }}
+            ./target/*.msi
