@@ -1,5 +1,7 @@
 package com.changenode;
 
+import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
 import com.changenode.plugin.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -52,6 +54,8 @@ public class BaseApplication extends Application implements Log {
 
     @Override
     public void start(Stage stage) {
+
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
         BorderPane borderPane = new BorderPane();
 

@@ -1,7 +1,10 @@
 package com.changenode.plugin;
 
+import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
 import com.changenode.Log;
 import com.changenode.Plugin;
+import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
@@ -28,10 +31,14 @@ public class DarkMode implements Plugin {
 
     private void toggleDark() {
         if (isDark) {
-            scene.getRoot().setStyle("");
+            // This is how to set a light style w/the default JavaFX CSS
+            // scene.getRoot().setStyle("");
+            Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
             toggleDark.setText("Light");
         } else {
-            scene.getRoot().setStyle("-fx-base:#25292D;");
+            // This is how to set a dark style w/the default JavaFX CSS.
+            // scene.getRoot().setStyle("-fx-base:#25292D;");
+            Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
             toggleDark.setText("Dark");
         }
         isDark = !isDark;
