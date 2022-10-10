@@ -75,7 +75,7 @@ jobs:
         env:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-        if: matrix.os == 'macos-latest' && ${{ env.MACOS_CERTIFICATE != null }}
+        if: ${{ env.MACOS_CERTIFICATE != null && matrix.os == 'macos-latest' }}
         run: |
           export DMG_PATH=$(ls ./target/*.dmg)
           /usr/bin/codesign --deep --force -s ${{ env.DEV_IDENTITY}} $DMG_PATH -v
@@ -85,7 +85,7 @@ jobs:
         env:
           APP_EMAIL: ${{ secrets.APP_EMAIL }}
           APP_PASS: ${{ secrets.APP_PASS }}
-        if: matrix.os == 'macos-latest' && ${{ env.APP_PASS != null }}
+        if: ${{ env.APP_EMAIL != null && matrix.os == 'macos-latest' }}
         uses: devbotsxyz/xcode-notarize@v1
         with:
           product-path: ${{ env.DMG_PATH }}
@@ -96,7 +96,7 @@ jobs:
         env:
           APP_EMAIL: ${{ secrets.APP_EMAIL }}
           APP_PASS: ${{ secrets.APP_PASS }}
-        if: matrix.os == 'macos-latest' && ${{ env.APP_PASS != null }}
+        if: ${{ env.APP_EMAIL != null && matrix.os == 'macos-latest' }}
         uses: devbotsxyz/xcode-staple@v1
         with:
           product-path: ${{ env.DMG_PATH }}
