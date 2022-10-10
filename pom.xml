@@ -6,7 +6,7 @@
 
     <groupId>com.changenode</groupId>
     <artifactId>maven-jpackage-template</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
 
     <!-- This description text is included in the Windows installer by default, see windows-jpackage.txt -->
     <description>Sample JavaFX Application</description>
@@ -57,6 +57,14 @@
             <artifactId>javafaker</artifactId>
             <version>1.0.2</version>
         </dependency>
+
+        <!-- Modern JavaFX Look and Feel -->
+        <!-- https://github.com/mkpaz/atlantafx -->
+        <dependency>
+            <groupId>io.github.mkpaz</groupId>
+            <artifactId>atlantafx-base</artifactId>
+            <version>1.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -79,8 +87,12 @@
             </resource>
             <!-- Add the default resource path back in - by overriding above it disables the default -->
             <resource>
-                <filtering>true</filtering>
                 <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources/build-info/</directory>
+                <filtering>true</filtering>
             </resource>
         </resources>
 
@@ -199,17 +211,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.10.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -235,18 +247,25 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.10.0</version>
+                    <version>4.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
+                    <version>3.0.0-M7</version>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
     <reporting>
         <plugins>
+            <!-- Basic report generation. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.3.0</version>
+            </plugin>
+
             <!-- http://mojo.codehaus.org/versions-maven-plugin/version-rules.html -->
             <!-- This plugin is a utility to find outdated dependencies in your project. Just run mvn site and
             the resulting HTML reports in target/site will let you know what plugins and dependencies are out of date.
@@ -272,17 +291,29 @@
     </reporting>
     <profiles>
         <profile>
-            <id>github-action</id>
+            <id>GitHub Run</id>
             <activation>
                 <property>
-                    <name>env.GITHUB_RUN_NUMBER</name>
+                    <name>env.GITHUB_ACTIONS</name>
                 </property>
             </activation>
             <properties>
                 <!--suppress UnresolvedMavenProperty -->
-                <app.version>1.${env.GITHUB_RUN_NUMBER}.${env.GITHUB_RUN_ATTEMPT}</app.version>
+                <app.version>1.1.${env.GITHUB_RUN_NUMBER}</app.version>
             </properties>
         </profile>
+        <profile>
+            <id>Local Development Run</id>
+            <activation>
+                <property>
+                    <name>!env.GITHUB_ACTIONS</name>
+                </property>
+            </activation>
+            <properties>
+                <app.version>1.1.0</app.version>
+            </properties>
+        </profile>
+
 
         <!-- We use the built-in Maven profile activation system to set the platform property.
         These properties are then use to build the directory paths to the platform specific resources.
