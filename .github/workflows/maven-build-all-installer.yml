@@ -51,13 +51,16 @@ jobs:
         if: matrix.os != 'macos-latest'
         run: mvn -B clean install --file pom.xml
       - name: "Build with Maven (macOS No Signing)"
-        if: ${{ secrets.MACOS_CERTIFICATE == null }} && matrix.os == 'macos-latest'
-        run: mvn -B clean install --file pom.xml
-      - name: "Build with Maven (macOS Signed)"
-        if: ${{ secrets.MACOS_CERTIFICATE != null }} && matrix.os == 'macos-latest'
         env:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        if: ${{ env.MACOS_CERTIFICATE == null }} && matrix.os == 'macos-latest'
+        run: mvn -B clean install --file pom.xml
+      - name: "Build with Maven (macOS Signed)"
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        if: ${{ env.MACOS_CERTIFICATE != null }} && matrix.os == 'macos-latest'
         run: |
           echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
           security create-keychain -p temppass build.keychain
