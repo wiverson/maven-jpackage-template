@@ -26,6 +26,12 @@ to get this working. [More information on MacOS signing](docs/apple-sign-notariz
 This template uses a [Maven plugin](https://github.com/wiverson/jtoolprovider-plugin) to generate a custom JVM and
 installer package for a JavaFX application. It can easily be adapted to work with Swing instead.
 
+## Recent Updates
+
+- Consolidated to a single GitHub Matrix action installer. Simplified build numbering based on run numbers. Should fix Windows installer issues related to timestamp versioning.
+- Switched to using JDKs w/JavaFX built-in instead of including JavaFX libs in this build.
+- Switched to the [AtlantaFX](https://github.com/mkpaz/atlantafx) theme by default. Much like [FlatLaf for Swing](https://www.formdev.com/flatlaf/), updates JavaFX to a more modern L&F.
+
 ## Requirements
 
 - [Java 18](https://bell-sw.com/pages/downloads/#/java-18-current).
@@ -138,15 +144,21 @@ build version numbers. This is usually project specific.
 Yes, although as of this writing I don't believe there are GitHub Action runners that support M1. But building locally
 on my M1/M2 systems works great and generates native Apple Silicon builds.
 
-### Does this support MacOS signing, notarization, and stapling?
+### Does this support macOS signing, notarization, and stapling?
 
 Yes, there is a GitHub Action and a Maven profile to assist with setting all of this up
-for MacOS applications.
+for macOS applications.
 
 For more information, see
 the [documentation on getting MacOS signing/notarization/stapling](/docs/apple-sign-notarize.md) set
-up. It won't work out of the box, as you need to sign up for an Apple Developer account,
-add a bunch of GitHub Secrets and update the pom.xml.
+up. 
+
+To get this working, you will need to:
+
+1. You need to sign up for an Apple Developer account.
+2. Add [four GitHub Secrets based on information from Apple]((/docs/apple-sign-notarize.md)).
+3. Update the [build all installer GitHub Action yaml](https://github.com/wiverson/maven-jpackage-template/blob/6d4ef8a80a562f2d49ec41204927d07aa8990d25/.github/workflows/maven-build-all-installer.yml#L14) 
+4. Update the [pom.xml](https://github.com/wiverson/maven-jpackage-template/blob/6d4ef8a80a562f2d49ec41204927d07aa8990d25/pom.xml#L331).
 
 ### What about Linux?
 
