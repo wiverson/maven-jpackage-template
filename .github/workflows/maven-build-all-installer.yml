@@ -72,17 +72,20 @@ jobs:
           echo $(security find-identity -v)
           mvn -B clean install  -Pmacos-sign --file pom.xml
       - name: "Codesign DMG"
-        if: matrix.os == 'macos-latest' && ${{ secrets.MACOS_CERTIFICATE != null }}
         env:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        if: matrix.os == 'macos-latest' && ${{ env.MACOS_CERTIFICATE != null }}
         run: |
           export DMG_PATH=$(ls ./target/*.dmg)
           /usr/bin/codesign --deep --force -s ${{ env.DEV_IDENTITY}} $DMG_PATH -v
           echo DMG_PATH=$DMG_PATH >> $GITHUB_ENV
           echo ${{ env.DMG_PATH }}
       - name: "Notarize DMG"
-        if: matrix.os == 'macos-latest' && ${{ secrets.APP_PASS != null }}
+        env:
+          APP_EMAIL: ${{ secrets.APP_EMAIL }}
+          APP_PASS: ${{ secrets.APP_PASS }}
+        if: matrix.os == 'macos-latest' && ${{ env.APP_PASS != null }}
         uses: devbotsxyz/xcode-notarize@v1
         with:
           product-path: ${{ env.DMG_PATH }}
@@ -90,7 +93,10 @@ jobs:
           appstore-connect-username: ${{ secrets.APP_EMAIL }}
           appstore-connect-password: ${{ secrets.APP_PASS }}
       - name: "Staple DMG"
-        if: matrix.os == 'macos-latest' && ${{ secrets.APP_PASS != null }}
+        env:
+          APP_EMAIL: ${{ secrets.APP_EMAIL }}
+          APP_PASS: ${{ secrets.APP_PASS }}
+        if: matrix.os == 'macos-latest' && ${{ env.APP_PASS != null }}
         uses: devbotsxyz/xcode-staple@v1
         with:
           product-path: ${{ env.DMG_PATH }}
