@@ -60,7 +60,7 @@ jobs:
         env:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-        if: ${{ env.MACOS_CERTIFICATE != null }} && matrix.os == 'macos-latest'
+        if: ${{ env.MACOS_CERTIFICATE}} && matrix.os == 'macos-latest'
         run: |
           echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
           security create-keychain -p temppass build.keychain
