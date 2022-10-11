@@ -110,3 +110,4 @@ jobs:
           files: | 
             ${{ env.DMG_PATH }}
             ./target/*.msi
+            ./target/*.dmg
