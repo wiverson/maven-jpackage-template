@@ -26,11 +26,7 @@ to get this working. [More information on MacOS signing](docs/apple-sign-notariz
 This template uses a [Maven plugin](https://github.com/wiverson/jtoolprovider-plugin) to generate a custom JVM and
 installer package for a JavaFX application. It can easily be adapted to work with Swing instead.
 
-## Recent Updates
-
-- Consolidated to a single GitHub Matrix action installer. Simplified build numbering based on run numbers. Should fix Windows installer issues related to timestamp versioning.
-- Switched to using JDKs w/JavaFX built-in instead of including JavaFX libs in this build.
-- Switched to the [AtlantaFX](https://github.com/mkpaz/atlantafx) theme by default. Much like [FlatLaf for Swing](https://www.formdev.com/flatlaf/), updates JavaFX to a more modern L&F.
+Check out the [announcements and recent updates](https://github.com/wiverson/maven-jpackage-template/discussions/categories/announcements).
 
 ## Requirements
 
