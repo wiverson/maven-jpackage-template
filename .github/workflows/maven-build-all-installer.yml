@@ -54,7 +54,7 @@ jobs:
         env:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-        if: ${{ env.MACOS_CERTIFICATE == null }} && matrix.os == 'macos-latest'
+        if: ${{ env.MACOS_CERTIFICATE == null && matrix.os == 'macos-latest' }}
         run: mvn -B clean install --file pom.xml
       - name: "Build with Maven (macOS Signed)"
         env:
@@ -111,3 +111,4 @@ jobs:
             ${{ env.DMG_PATH }}
             ./target/*.msi
             ./target/*.dmg
+            ./target/*.deb
